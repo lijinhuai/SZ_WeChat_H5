@@ -54,7 +54,7 @@ export default {
     onChange: {
       type: Function,
       default: (onChangeFunc) => {
-        onChangeFunc(this.inputValue);
+        onChangeFunc(this.inputValue)
       }
     },
     onBlur: {
@@ -68,43 +68,43 @@ export default {
       default: ''
     }
   },
-  data() {
+  data () {
     return {
       winH: window.innerHeight,
       inputValue: this.defaultValue || ''
-    };
+    }
   },
   watch: {
-    defaultValue() {
-      this.inputValue = this.defaultValue;
+    defaultValue () {
+      this.inputValue = this.defaultValue
     }
   },
   methods: {
-    selectLevel1(e, level1) {
-      e.preventDefault();
-      this.inputValue = level1;
-      this.onChange(level1);
+    selectLevel1 (e, level1) {
+      e.preventDefault()
+      this.inputValue = level1
+      this.onChange(level1)
     },
-    selectLevel2(e, level2) {
-      e.preventDefault();
-      const inputValue = this.inputValue + level2;
+    selectLevel2 (e, level2) {
+      e.preventDefault()
+      const inputValue = this.inputValue + level2
 
       if (inputValue.length > this.maxLength) {
-        this.onDone();
+        this.onDone()
       } else {
-        this.inputValue = inputValue;
-        this.onChange(inputValue);
+        this.inputValue = inputValue
+        this.onChange(inputValue)
       }
     },
-    backspace() {
-      const inputValue = this.inputValue;
-      const backspaceValue = inputValue.substr(0, inputValue.length - 1);
+    backspace () {
+      const inputValue = this.inputValue
+      const backspaceValue = inputValue.substr(0, inputValue.length - 1)
 
-      this.inputValue = backspaceValue;
-      this.onChange(backspaceValue);
+      this.inputValue = backspaceValue
+      this.onChange(backspaceValue)
     }
   }
-};
+}
 </script>
 
 <style lang="scss">
