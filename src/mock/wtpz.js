@@ -1,4 +1,3 @@
-import { param2Obj } from '@/utils'
 export default {
   listHpzl: config => {
     return [{
