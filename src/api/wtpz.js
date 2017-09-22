@@ -16,7 +16,6 @@ export function fetchDldmList () {
 
 // 查询路段代码字典
 export function fetchLddmList (query) {
-  debugger
   return fetch({
     url: '/lddm',
     method: 'get',
