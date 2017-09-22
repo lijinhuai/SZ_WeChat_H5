@@ -18,18 +18,19 @@ Vue.use(Router)
 export const constantRouterMap = [{
   path: '/',
   component: _import('Hello')
-  // hidden: true
+    // hidden: true
 
-}/* , {
-  path: '/404',
-  component: _import('errorPage/404'),
-  hidden: true
-},
-{
-  path: '/401',
-  component: _import('errorPage/401'),
-  hidden: true
-} */
+}
+  /* , {
+    path: '/404',
+    component: _import('errorPage/404'),
+    hidden: true
+  },
+  {
+    path: '/401',
+    component: _import('errorPage/401'),
+    hidden: true
+  } */
 ]
 
 export default new Router({

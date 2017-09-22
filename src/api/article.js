@@ -19,7 +19,8 @@ export function fetchPv (pv) {
   return fetch({
     url: '/article/pv',
     method: 'get',
-    params: { pv }
+    params: {
+      pv
+    }
   })
 }
-

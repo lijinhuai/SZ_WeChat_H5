@@ -10,7 +10,7 @@
             <label class="weui-label">号牌号码</label>
           </div>
           <div class="weui-cell__bd">
-            <h1 class="weui-h1" @click="showKeyboard">{{hphm}}</h1>
+            <h1 class="weui-h1" @click="showKeyboard">{{form.hphm}}</h1>
           </div>
         </div>
         <div class="weui-cell weui-cell_select weui-cell_select-after">
@@ -18,7 +18,7 @@
             <label class="weui-label">号牌种类</label>
           </div>
           <div class="weui-cell__bd">
-            <select v-model="hpzl" class="weui-select" name="select2">
+            <select v-model="form.hpzl" class="weui-select" name="select2">
               <option v-for="hpzl in hpzlList" :key="hpzl.id" :value="hpzl.dm">{{hpzl.value}}</option>
             </select>
           </div>
@@ -28,7 +28,7 @@
             <label for="" class="weui-label">违法地点</label>
           </div>
           <div class="weui-cell__bd">
-            <select v-model="dldm" class="weui-select" name="select2">
+            <select v-model="form.dldm" class="weui-select" name="select2">
               <option v-for="dldm in dldmList" :key="dldm.id" :value="dldm.dm">{{dldm.value}}</option>
             </select>
           </div>
@@ -38,7 +38,7 @@
             <label for="" class="weui-label">路段号码</label>
           </div>
           <div class="weui-cell__bd">
-            <select v-model="lddm" class="weui-select" name="select2">
+            <select v-model="form.lddm" class="weui-select" name="select2">
               <option v-for="lddm in lddmList" :key="lddm.id" :value="lddm.dm">{{lddm.value}}</option>
             </select>
           </div>
@@ -48,7 +48,7 @@
             <label class="weui-label">地点描述</label>
           </div>
           <div class="weui-cell__bd">
-            <input class="weui-input" type="text" v-model="ddms" placeholder="请输入地点描述">
+            <input class="weui-input" type="text" v-model="form.ddms" placeholder="请输入地点描述">
           </div>
         </div>
       </div>
@@ -97,14 +97,16 @@ export default {
       uploadFileList: [], // 待上传的图片列表
       isOpen: false,
       hphmDefaultValue: '苏E',
-      hphm: '苏E',
+      form: {
+        hphm: '苏E',
+        hpzl: '',
+        dldm: '',
+        lddm: '',
+        ddms: ''
+      },
       hpzlList: [],
-      hpzl: '',
       dldmList: [],
-      dldm: '',
-      lddmList: [],
-      lddm: '',
-      ddms: ''
+      lddmList: []
     }
   },
   components: {
@@ -275,15 +277,15 @@ export default {
       this.isOpen = false
     },
     queryLddmist () {
-      fetchLddmList({ 'dldm': this.dldm }).then(response => {
+      fetchLddmList({ 'dldm': this.form.dldm }).then(response => {
         this.lddmList = response.data
       })
     }
   },
   watch: {
-    dldm: function (value) {
+    'form.dldm': function (value) {
       this.queryLddmist()
-      this.lddm = ''
+      this.form.lddm = ''
     }
   }
 
