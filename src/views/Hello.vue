@@ -10,7 +10,7 @@
             <label class="weui-label">号牌号码</label>
           </div>
           <div class="weui-cell__bd">
-            <h1 class="weui-h1" @click="showKeyboard">{{form.hphm}}</h1>
+            <h1 class="weui-input weui-h1" @click="showKeyboard">{{form.hphm}}</h1>
           </div>
         </div>
         <div class="weui-cell weui-cell_select weui-cell_select-after">
@@ -23,9 +23,25 @@
             </select>
           </div>
         </div>
+        <div class="weui-cell" v-bind:class="{showDiv:showUploadBtn,hideDiv:!showUploadBtn}">
+          <div class="weui-cell__hd">
+            <label class="weui-label">违法日期</label>
+          </div>
+          <div class="weui-cell__bd">
+            <h1 class="weui-input weui-h1" @click="modifyWfrq">{{form.wfrq}}</h1>
+          </div>
+        </div>
+        <div class="weui-cell" v-bind:class="{showDiv:showUploadBtn,hideDiv:!showUploadBtn}">
+          <div class="weui-cell__hd">
+            <label class="weui-label">违法时间</label>
+          </div>
+          <div class="weui-cell__bd">
+            <h1 class="weui-input weui-h1" @click="modifyWfsj">{{form.wfsj}}</h1>
+          </div>
+        </div>
         <div class="weui-cell weui-cell_select weui-cell_select-after">
           <div class="weui-cell__hd">
-            <label for="" class="weui-label">违法地点</label>
+            <label class="weui-label">违法地点</label>
           </div>
           <div class="weui-cell__bd">
             <select v-model="form.dldm" class="weui-select" name="select2">
@@ -35,7 +51,7 @@
         </div>
         <div class="weui-cell weui-cell_select weui-cell_select-after">
           <div class="weui-cell__hd">
-            <label for="" class="weui-label">路段号码</label>
+            <label class="weui-label">路段号码</label>
           </div>
           <div class="weui-cell__bd">
             <select v-model="form.lddm" class="weui-select" name="select2">
@@ -72,9 +88,90 @@
           </div>
         </div>
       </div>
-      <div class="weui-btn-area">
-        <a id="uploaderBtn" href="javascript:" class="weui-btn weui-btn_primary">上传</a>
+
+      <div class="weui-cells weui-cells_form" v-bind:class="{showDiv:showUploadBtn,hideDiv:!showUploadBtn}">
+        <div class="weui-cell weui-cell_select weui-cell_select-after">
+          <div class="weui-cell__hd">
+            <label class="weui-label">车身颜色</label>
+          </div>
+          <div class="weui-cell__bd">
+            <select v-model="form.csys" class="weui-select" name="select2">
+              <option v-for="csys in csysList" :key="csys.id" :value="csys.dm">{{csys.value}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="weui-cell weui-cell_select weui-cell_select-after">
+          <div class="weui-cell__hd">
+            <label class="weui-label">车辆类型</label>
+          </div>
+          <div class="weui-cell__bd">
+            <select v-model="form.cllx" class="weui-select" name="select2">
+              <option v-for="cllx in cllxList" :key="cllx.id" :value="cllx.dm">{{cllx.value}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="weui-cell weui-cell_select weui-cell_select-after">
+          <div class="weui-cell__hd">
+            <label class="weui-label">车辆分类</label>
+          </div>
+          <div class="weui-cell__bd">
+            <select v-model="form.clfl" class="weui-select" name="select2">
+              <option v-for="clfl in clflList" :key="clfl.id" :value="clfl.dm">{{clfl.value}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="weui-cell">
+          <div class="weui-cell__hd">
+            <label class="weui-label">车主名称</label>
+          </div>
+          <div class="weui-cell__bd">
+            <input class="weui-input" type="text" v-model="form.czmc" placeholder="请输入车主名称">
+          </div>
+        </div>
+        <div class="weui-cell">
+          <div class="weui-cell__hd">
+            <label class="weui-label">车主地址</label>
+          </div>
+          <div class="weui-cell__bd">
+            <input class="weui-input" type="text" v-model="form.czdz" placeholder="请输入车主地址">
+          </div>
+        </div>
+        <div class="weui-cell">
+          <div class="weui-cell__hd">
+            <label class="weui-label">联系电话</label>
+          </div>
+          <div class="weui-cell__bd">
+            <input class="weui-input" type="number" v-model="form.lxdh" placeholder="请输入联系电话">
+          </div>
+        </div>
+        <div class="weui-cell">
+          <div class="weui-cell__hd">
+            <label class="weui-label">车辆品牌</label>
+          </div>
+          <div class="weui-cell__bd">
+            <input class="weui-input" type="text" v-model="form.clpp" placeholder="请输入车辆品牌">
+          </div>
+        </div>
+        <div class="weui-cell weui-cell_select weui-cell_select-after">
+          <div class="weui-cell__hd">
+            <label class="weui-label">车辆拖移</label>
+          </div>
+          <div class="weui-cell__bd">
+            <select v-model="form.clty" class="weui-select" name="select2">
+              <option v-for="clty in cltyList" :key="clty.id" :value="clty.dm">{{clty.value}}</option>
+            </select>
+          </div>
+        </div>
       </div>
+
+      <div class="weui-btn-area">
+        <a id="uploaderBtn" @click="search" class="weui-btn weui-btn_primary" v-bind:class="{showDiv:showSearchBtn,hideDiv:!showSearchBtn}">检索</a>
+        <a id="uploaderBtn" @click="upload" class="weui-btn weui-btn_primary" v-bind:class="{showDiv:showUploadBtn,hideDiv:!showUploadBtn}">提交</a>
+      </div>
+    </div>
+
+    <div class="weui-footer">
+      <p class="weui-footer__text">Copyright © 2001-2017 苏州广达科技有限公司</p>
     </div>
   </div>
 </template>
@@ -94,19 +191,44 @@ export default {
   data () {
     return {
       maxPicAmounts: 3,
-      isOpen: false,
+      isOpen: false, // 键盘是否打开
+      showSearchBtn: true, // 显示查询按钮
+      showUploadBtn: false, // 显示提交按钮
       hphmDefaultValue: '苏E',
+      wfsj: {
+        y: '',
+        M: '',
+        d: '',
+        H: '',
+        m: '',
+        date: '',
+        time: ''
+      },
       form: {
         uploadFileList: [], // 待上传的图片列表
         hphm: '苏E',
         hpzl: '',
+        wfrq: '',
+        wfsj: '',
         dldm: '',
         lddm: '',
-        ddms: ''
+        ddms: '',
+        csys: '',
+        cllx: '',
+        clfl: '',
+        czmc: '',
+        czdz: '',
+        lxdh: '',
+        clpp: '',
+        clty: ''
       },
       hpzlList: [],
       dldmList: [],
-      lddmList: []
+      lddmList: [],
+      csysList: [],
+      cllxList: [],
+      clflList: [],
+      cltyList: []
     }
   },
   components: {
@@ -115,7 +237,6 @@ export default {
   mounted () {
     this.initUploader()
     this.initGallery()
-    this.initUploaderBtn()
     fetchHpzlList().then(response => {
       this.hpzlList = response.data
     })
@@ -140,6 +261,8 @@ export default {
         },
         onBeforeQueued: function (files) {
           // `this` 是轮询到的文件, `files` 是所有文件
+
+          uploadCount = self.form.uploadFileList.length
 
           if (['image/jpg', 'image/jpeg', 'image/png', 'image/gif'].indexOf(this.type) < 0) {
             weui.alert('请上传图片')
@@ -166,7 +289,7 @@ export default {
           const that = this
           const dateStr = dateUtil.formatDate(new Date(), 'yyyy/MM/dd HH:mm')
           watermark([this.url])
-            .image(watermark.text.lowerRight(dateStr, '28px serif', '#fff', 0.8))
+            .image(watermark.text.lowerRight(dateStr, '48pt serif', '#FFFF00', 0.8))
             .then(function (img) {
               that.base64 = img.src
               that.url = imageUtil.dataURItoObjectURL(img.src)
@@ -221,7 +344,6 @@ export default {
           url = url.match(/url\((.*?)\)/)[1].replace(/"/g, '')
         }
 
-        console.log(self.form.uploadFileList)
         // 将url改成修改添加水印后的base64图片
         var index
         for (var i = 0, len = self.form.uploadFileList.length; i < len; ++i) {
@@ -239,7 +361,7 @@ export default {
               var index
               for (var i = 0, len = self.form.uploadFileList.length; i < len; ++i) {
                 var file = self.form.uploadFileList[i]
-                if (file.id === id) {
+                if (file.id === parseInt(id)) {
                   index = i
                   break
                 }
@@ -253,15 +375,6 @@ export default {
               })
             })
           }
-        })
-      })
-    },
-    // 手动上传按钮
-    initUploaderBtn () {
-      const self = this
-      document.getElementById('uploaderBtn').addEventListener('click', function () {
-        self.form.uploadFileList.forEach(function (file) {
-          file.upload()
         })
       })
     },
@@ -281,12 +394,120 @@ export default {
       fetchLddmList({ 'dldm': this.form.dldm }).then(response => {
         this.lddmList = response.data
       })
+    },
+    modifyWfrq () {
+      const self = this
+      weui.datePicker({
+        start: new Date(),
+        end: '2030-12-29',
+        /**
+        * https://zh.wikipedia.org/wiki/Cron
+        * cron 表达式后三位
+        * 示例：
+        *  * * *                每天
+        *  5 * *                每个月的5日
+        *  1-10 * *             每个月的前10日
+        *  1,5,10 * *           每个月的1号、5号、10号
+        *  *\/2 * *             每个月的 1、3、5、7...日，注意写的时候斜杠“/”前面没有反斜杠“\”，这是因为是注释所以需要转义
+        *  * 2 0                2月的每个周日
+        *  * * 0,6              每个周末
+        *  * * 3                每周三
+        */
+        cron: '* * *',
+        defaultValue: [self.wfsj.y, self.wfsj.M, self.wfsj.d],
+        onConfirm: function onChange (result) {
+          console.log(result)
+          self.wfsj.date = result[0] + '-' + result[1] + '-' + result[2]
+          self.wfsj.y = result[0]
+          self.wfsj.M = result[1]
+          self.wfsj.d = result[2]
+        },
+        id: 'datePicker'
+      })
+    },
+    modifyWfsj () {
+      const self = this
+      var hours = []
+      var minites = []
+      var symbol = [{ label: ':', value: 0 }]
+      if (!hours.length) {
+        for (var i = 0; i < 24; i++) {
+          var hoursItem = {}
+          hoursItem.label = ('' + i).length === 1 ? '0' + i : '' + i
+          hoursItem.value = i
+          hours.push(hoursItem)
+        }
+      }
+      if (!minites.length) {
+        for (var j = 0; j < 60; j++) {
+          var miniteItem = {}
+          miniteItem.label = ('' + j).length === 1 ? '0' + j : '' + j
+          miniteItem.value = j
+          minites.push(miniteItem)
+        }
+      }
+
+      weui.picker(hours, symbol, minites, {
+        defaultValue: [self.wfsj.H, 0, self.wfsj.m],
+        onConfirm: function (result) {
+          var time = result[0].label + ':' + result[2].label
+          self.wfsj.time = time
+          self.wfsj.H = result[0].label
+          self.wfsj.m = result[1].label
+        },
+        id: 'timePicker'
+      })
+    },
+    search () {
+      const self = this
+      var loading = weui.loading('数据加载中')
+      setTimeout(() => {
+        this.showSearchBtn = false
+        this.showUploadBtn = true
+        loading.hide()
+        const now = new Date()
+        const y = now.getFullYear()
+        const M = now.getMonth() + 1
+        const d = now.getDate()
+        const H = now.getHours()
+        const m = now.getMinutes()
+        self.wfsj.y = y
+        self.wfsj.M = M
+        self.wfsj.d = d
+        self.wfsj.H = H
+        self.wfsj.m = m
+
+        self.wfsj.date = `${y}-${M}-${d}`
+        self.wfsj.time = `${H}:${m}`
+      }, 1000 * 2)
+    },
+    // 手动上传按钮
+    upload () {
+      weui.topTips('请输入正确的字段', {
+        duration: 3000,
+        className: 'custom-classname',
+        callback: function callback () {
+          // console.log('close')
+        }
+      })
+      // const self = this
+      // document.getElementById('uploaderBtn').addEventListener('click', function () {
+      //   self.form.uploadFileList.forEach(function (file) {
+      //     file.upload()
+      //   })
+      // })
     }
   },
   watch: {
     'form.dldm': function (value) {
       this.queryLddmist()
       this.form.lddm = ''
+    },
+    'wfsj.date': function (value) {
+      this.form.wfrq = value
+    },
+    'wfsj.time': function (value) {
+      this.form.wfsj = value
     }
   }
 
@@ -296,15 +517,14 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .weui-h1 {
-  width: 100%;
-  border: 0;
-  outline: 0;
-  -webkit-appearance: none;
-  background-color: transparent;
-  font-size: inherit;
-  color: inherit;
-  height: 1.47058824em;
-  line-height: 1.47058824;
   font-weight: normal;
+}
+
+.hideDiv {
+  display: none;
+}
+
+.showDiv {
+  opacity: 1;
 }
 </style>
