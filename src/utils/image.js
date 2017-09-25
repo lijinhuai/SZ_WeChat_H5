@@ -22,8 +22,8 @@ export const dataURItoBlob = (dataURI) => {
 }
 
 export const dataURItoObjectURL = (dataURI) => {
-  // var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-  var mimeString = 'application/zip'
+  var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
+  // var mimeString = 'application/zip'
   var buffer = dataURItoBuffer(dataURI)
   var blob = new Blob([buffer], {
     type: mimeString

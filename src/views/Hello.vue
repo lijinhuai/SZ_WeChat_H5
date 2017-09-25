@@ -60,7 +60,7 @@
               <div class="weui-uploader__hd">
                 <p class="weui-uploader__title">图片上传</p>
                 <div class="weui-uploader__info">
-                  <span id="uploadCount">{{uploadFileList.length}}</span>/{{maxPicAmounts}}</div>
+                  <span id="uploadCount">{{form.uploadFileList.length}}</span>/{{maxPicAmounts}}</div>
               </div>
               <div class="weui-uploader__bd">
                 <ul class="weui-uploader__files" id="uploaderFiles"></ul>
@@ -94,10 +94,10 @@ export default {
   data () {
     return {
       maxPicAmounts: 3,
-      uploadFileList: [], // 待上传的图片列表
       isOpen: false,
       hphmDefaultValue: '苏E',
       form: {
+        uploadFileList: [], // 待上传的图片列表
         hphm: '苏E',
         hpzl: '',
         dldm: '',
@@ -170,7 +170,7 @@ export default {
             .then(function (img) {
               that.base64 = img.src
               that.url = imageUtil.dataURItoObjectURL(img.src)
-              self.uploadFileList.push(that)
+              self.form.uploadFileList.push(that)
             })
           // self.uploadFileList.push(this)
 
@@ -221,29 +221,30 @@ export default {
           url = url.match(/url\((.*?)\)/)[1].replace(/"/g, '')
         }
 
+        console.log(self.form.uploadFileList)
         // 将url改成修改添加水印后的base64图片
         var index
-        for (var i = 0, len = self.uploadFileList.length; i < len; ++i) {
-          var file = self.uploadFileList[i]
-          if (file.id === id) {
+        for (var i = 0, len = self.form.uploadFileList.length; i < len; ++i) {
+          var file = self.form.uploadFileList[i]
+          if (file.id === parseInt(id)) {
             index = i
             break
           }
         }
-        if (index >= 0) url = self.uploadFileList[index].url
+        if (index >= 0) url = self.form.uploadFileList[index].url
 
         var gallery = weui.gallery(url, {
           onDelete: function onDelete () {
             weui.confirm('确定删除该图片？', function () {
               var index
-              for (var i = 0, len = self.uploadFileList.length; i < len; ++i) {
-                var file = self.uploadFileList[i]
+              for (var i = 0, len = self.form.uploadFileList.length; i < len; ++i) {
+                var file = self.form.uploadFileList[i]
                 if (file.id === id) {
                   index = i
                   break
                 }
               }
-              if (index >= 0) self.uploadFileList.splice(index, 1)
+              if (index >= 0) self.form.uploadFileList.splice(index, 1)
 
               target.remove()
               // gallery.hide()
@@ -259,7 +260,7 @@ export default {
     initUploaderBtn () {
       const self = this
       document.getElementById('uploaderBtn').addEventListener('click', function () {
-        self.uploadFileList.forEach(function (file) {
+        self.form.uploadFileList.forEach(function (file) {
           file.upload()
         })
       })
@@ -268,7 +269,7 @@ export default {
       this.isOpen = true
     },
     onChange (value) {
-      this.hphm = value
+      this.form.hphm = value
     },
     onBlur () {
       this.isOpen = false
