@@ -13,14 +13,12 @@
             <h1 class="weui-input weui-h1" @click="showKeyboard">{{form.hphm}}</h1>
           </div>
         </div>
-        <div class="weui-cell weui-cell_select weui-cell_select-after">
+        <div class="weui-cell">
           <div class="weui-cell__hd">
             <label class="weui-label">号牌种类</label>
           </div>
           <div class="weui-cell__bd">
-            <select v-model="form.hpzl" class="weui-select" name="select2">
-              <option v-for="hpzl in hpzlList" :key="hpzl.id" :value="hpzl.dm">{{hpzl.value}}</option>
-            </select>
+            <h1 class="weui-input weui-h1" @click="hpzlDictPicker">{{form.hpzlText}}</h1>
           </div>
         </div>
         <div class="weui-cell" v-bind:class="{showDiv:showUploadBtn,hideDiv:!showUploadBtn}">
@@ -39,24 +37,20 @@
             <h1 class="weui-input weui-h1" @click="modifyWfsj">{{form.wfsj}}</h1>
           </div>
         </div>
-        <div class="weui-cell weui-cell_select weui-cell_select-after">
+        <div class="weui-cell">
           <div class="weui-cell__hd">
             <label class="weui-label">违法地点</label>
           </div>
           <div class="weui-cell__bd">
-            <select v-model="form.dldm" class="weui-select" name="select2">
-              <option v-for="dldm in dldmList" :key="dldm.id" :value="dldm.dm">{{dldm.value}}</option>
-            </select>
+            <h1 class="weui-input weui-h1" @click="dldmDictPicker">{{form.dldmText}}</h1>
           </div>
         </div>
-        <div class="weui-cell weui-cell_select weui-cell_select-after">
+        <div class="weui-cell">
           <div class="weui-cell__hd">
             <label class="weui-label">路段号码</label>
           </div>
           <div class="weui-cell__bd">
-            <select v-model="form.lddm" class="weui-select" name="select2">
-              <option v-for="lddm in lddmList" :key="lddm.id" :value="lddm.dm">{{lddm.value}}</option>
-            </select>
+            <h1 class="weui-input weui-h1" @click="lddmDictPicker">{{form.lddmText}}</h1>
           </div>
         </div>
         <div class="weui-cell">
@@ -90,34 +84,28 @@
       </div>
 
       <div class="weui-cells weui-cells_form" v-bind:class="{showDiv:showUploadBtn,hideDiv:!showUploadBtn}">
-        <div class="weui-cell weui-cell_select weui-cell_select-after">
+        <div class="weui-cell">
           <div class="weui-cell__hd">
             <label class="weui-label">车身颜色</label>
           </div>
           <div class="weui-cell__bd">
-            <select v-model="form.csys" class="weui-select" name="select2">
-              <option v-for="csys in csysList" :key="csys.id" :value="csys.dm">{{csys.value}}</option>
-            </select>
+            <h1 class="weui-input weui-h1" @click="csysDictPicker">{{form.csysText}}</h1>
           </div>
         </div>
-        <div class="weui-cell weui-cell_select weui-cell_select-after">
+        <div class="weui-cell">
           <div class="weui-cell__hd">
             <label class="weui-label">车辆类型</label>
           </div>
           <div class="weui-cell__bd">
-            <select v-model="form.cllx" class="weui-select" name="select2">
-              <option v-for="cllx in cllxList" :key="cllx.id" :value="cllx.dm">{{cllx.value}}</option>
-            </select>
+            <h1 class="weui-input weui-h1" @click="cllxDictPicker">{{form.cllxText}}</h1>
           </div>
         </div>
-        <div class="weui-cell weui-cell_select weui-cell_select-after">
+        <div class="weui-cell">
           <div class="weui-cell__hd">
             <label class="weui-label">车辆分类</label>
           </div>
           <div class="weui-cell__bd">
-            <select v-model="form.clfl" class="weui-select" name="select2">
-              <option v-for="clfl in clflList" :key="clfl.id" :value="clfl.dm">{{clfl.value}}</option>
-            </select>
+            <h1 class="weui-input weui-h1" @click="clflDictPicker">{{form.clflText}}</h1>
           </div>
         </div>
         <div class="weui-cell">
@@ -152,14 +140,12 @@
             <input class="weui-input" type="text" v-model="form.clpp" placeholder="请输入车辆品牌">
           </div>
         </div>
-        <div class="weui-cell weui-cell_select weui-cell_select-after">
+        <div class="weui-cell">
           <div class="weui-cell__hd">
             <label class="weui-label">车辆拖移</label>
           </div>
           <div class="weui-cell__bd">
-            <select v-model="form.clty" class="weui-select" name="select2">
-              <option v-for="clty in cltyList" :key="clty.id" :value="clty.dm">{{clty.value}}</option>
-            </select>
+            <h1 class="weui-input weui-h1" @click="cltyDictPicker">{{form.cltyText}}</h1>
           </div>
         </div>
       </div>
@@ -184,7 +170,11 @@ import * as dateUtil from '@/utils/date'
 
 import VueCustomKeyboard from '@/components/VueCustomKeyboard.vue'
 
-import { fetchHpzlList, fetchDldmList, fetchLddmList } from '@/api/wtpz'
+import {
+  fetchHpzlList, fetchDldmList, fetchLddmList,
+  fetchCsysList, fetchCllxList, fetchClflList, fetchCltyList,
+  uploadPecc
+} from '@/api/pecc'
 
 export default {
   name: 'hello',
@@ -208,19 +198,26 @@ export default {
         uploadFileList: [], // 待上传的图片列表
         hphm: '苏E',
         hpzl: '',
+        hpzlText: '',
         wfrq: '',
         wfsj: '',
         dldm: '',
+        dldmText: '',
         lddm: '',
+        lddmText: '',
         ddms: '',
         csys: '',
+        csysText: '',
         cllx: '',
+        cllxText: '',
         clfl: '',
+        clflText: '',
         czmc: '',
         czdz: '',
         lxdh: '',
         clpp: '',
-        clty: ''
+        clty: '',
+        cltyText: ''
       },
       hpzlList: [],
       dldmList: [],
@@ -242,6 +239,18 @@ export default {
     })
     fetchDldmList().then(response => {
       this.dldmList = response.data
+    })
+    fetchCsysList().then(response => {
+      this.csysList = response.data
+    })
+    fetchClflList().then(response => {
+      this.clflList = response.data
+    })
+    fetchCllxList().then(response => {
+      this.cllxList = response.data
+    })
+    fetchCltyList().then(response => {
+      this.cltyList = response.data
     })
   },
   methods: {
@@ -288,8 +297,9 @@ export default {
         onQueued: function () {
           const that = this
           const dateStr = dateUtil.formatDate(new Date(), 'yyyy/MM/dd HH:mm')
+          const markStr = dateStr + ' ' + self.form.dldmText
           watermark([this.url])
-            .image(watermark.text.lowerRight(dateStr, '48pt serif', '#FFFF00', 0.8))
+            .image(watermark.text.lowerRight(markStr, '48pt serif', '#FFFF00', 0.8))
             .then(function (img) {
               that.base64 = img.src
               that.url = imageUtil.dataURItoObjectURL(img.src)
@@ -483,6 +493,7 @@ export default {
     },
     // 手动上传按钮
     upload () {
+      const self = this
       weui.topTips('请输入正确的字段', {
         duration: 3000,
         className: 'custom-classname',
@@ -490,18 +501,103 @@ export default {
           // console.log('close')
         }
       })
+      uploadPecc(self.form).then(
+        (response) => {
+          console.log(response)
+        }
+      )
+
       // const self = this
       // document.getElementById('uploaderBtn').addEventListener('click', function () {
       //   self.form.uploadFileList.forEach(function (file) {
       //     file.upload()
       //   })
       // })
+    },
+    hpzlDictPicker () {
+      const self = this
+      weui.picker(self.hpzlList, {
+        className: 'custom-classname',
+        onConfirm: function onConfirm (result) {
+          console.log(result)
+          self.form.hpzl = result[0].value
+          self.form.hpzlText = result[0].label
+        },
+        id: 'picker'
+      })
+    },
+    dldmDictPicker () {
+      const self = this
+      weui.picker(self.dldmList, {
+        className: 'custom-classname',
+        onConfirm: function onConfirm (result) {
+          self.form.dldm = result[0].value
+          self.form.dldmText = result[0].label
+        },
+        id: 'picker'
+      })
+    },
+    lddmDictPicker () {
+      const self = this
+      weui.picker(self.lddmList, {
+        className: 'custom-classname',
+        onConfirm: function onConfirm (result) {
+          self.form.lddm = result[0].value
+          self.form.lddmText = result[0].label
+        },
+        id: 'picker'
+      })
+    },
+    csysDictPicker () {
+      const self = this
+      weui.picker(self.csysList, {
+        className: 'custom-classname',
+        onConfirm: function onConfirm (result) {
+          self.form.csys = result[0].value
+          self.form.csysText = result[0].label
+        },
+        id: 'picker'
+      })
+    },
+    clflDictPicker () {
+      const self = this
+      weui.picker(self.clflList, {
+        className: 'custom-classname',
+        onConfirm: function onConfirm (result) {
+          self.form.clfl = result[0].value
+          self.form.clflText = result[0].label
+        },
+        id: 'picker'
+      })
+    },
+    cllxDictPicker () {
+      const self = this
+      weui.picker(self.cllxList, {
+        className: 'custom-classname',
+        onConfirm: function onConfirm (result) {
+          self.form.cllx = result[0].value
+          self.form.cllxText = result[0].label
+        },
+        id: 'picker'
+      })
+    },
+    cltyDictPicker () {
+      const self = this
+      weui.picker(self.cltyList, {
+        className: 'custom-classname',
+        onConfirm: function onConfirm (result) {
+          self.form.clty = result[0].value
+          self.form.cltyText = result[0].label
+        },
+        id: 'picker'
+      })
     }
   },
   watch: {
     'form.dldm': function (value) {
       this.queryLddmist()
       this.form.lddm = ''
+      this.form.lddmText = ''
     },
     'wfsj.date': function (value) {
       this.form.wfrq = value

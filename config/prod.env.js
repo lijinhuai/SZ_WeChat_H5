@@ -1,4 +1,3 @@
 module.exports = {
-  NODE_ENV: '"production"',
-  BASE_API: '"https://api-sit"'
+  NODE_ENV: '"production"'
 }

@@ -2,6 +2,5 @@ var merge = require('webpack-merge')
 var devEnv = require('./dev.env')
 
 module.exports = merge(devEnv, {
-  NODE_ENV: '"testing"',
-  BASE_API: '"https://api-sit"'
+  NODE_ENV: '"testing"'
 })
