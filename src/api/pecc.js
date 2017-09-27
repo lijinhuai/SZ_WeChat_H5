@@ -23,7 +23,7 @@ export function fetchLddmList (params) {
   })
 }
 
-// 查询路段代码字典
+// 查询车身颜色字典
 export function fetchCsysList () {
   return fetch({
     url: '/peccapi/csys',
@@ -39,7 +39,7 @@ export function fetchClflList () {
   })
 }
 
-// 查询车辆分类字典
+// 查询车辆类型字典
 export function fetchCllxList () {
   return fetch({
     url: '/peccapi/cllx',
@@ -55,7 +55,7 @@ export function fetchCltyList () {
   })
 }
 
-// 查询车辆拖移字典
+// 上传违停拍照数据
 export function uploadPecc (data) {
   return fetch({
     url: '/peccapi/pecc',

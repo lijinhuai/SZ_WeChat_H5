@@ -259,7 +259,7 @@ export default {
       const self = this
       var uploadCount = 0
       weui.uploader('#uploader', {
-        url: 'http://localhost:8080',
+        url: 'http://localhost:8081/api/peccapi/uploadPeccPhoto',
         auto: false,
         type: 'file',
         fileVal: 'fileVal',
@@ -301,7 +301,6 @@ export default {
           watermark([this.url])
             .image(watermark.text.lowerRight(markStr, '48pt serif', '#FFFF00', 0.8))
             .then(function (img) {
-              that.base64 = img.src
               that.url = imageUtil.dataURItoObjectURL(img.src)
               self.form.uploadFileList.push(that)
             })
@@ -470,6 +469,16 @@ export default {
     },
     search () {
       const self = this
+      if (self.form.hphm === '' || self.form.hphm.length !== 7 || self.form.hpzl === '' || self.form.dldm === '' || self.form.lddm === '') {
+        weui.topTips('请输入正确的字段', {
+          duration: 3000,
+          className: 'custom-classname',
+          callback: function callback () {
+            // console.log('close')
+          }
+        })
+        return
+      }
       var loading = weui.loading('数据加载中')
       setTimeout(() => {
         this.showSearchBtn = false
@@ -494,18 +503,34 @@ export default {
     // 手动上传按钮
     upload () {
       const self = this
-      weui.topTips('请输入正确的字段', {
-        duration: 3000,
-        className: 'custom-classname',
-        callback: function callback () {
-          // console.log('close')
-        }
-      })
+      if (self.form.hphm === '' || self.form.hphm.length !== 7 || self.form.hpzl === '' || self.form.dldm === '' ||
+        self.form.lddm === '' || self.form.csys === '' || self.form.clfl === '' || self.form.cllx === '' ||
+        self.form.clty === '') {
+        weui.topTips('请输入正确的字段', {
+          duration: 3000,
+          className: 'custom-classname',
+          callback: function callback () {
+            // console.log('close')
+          }
+        })
+        return
+      }
+
+      /* loading */
+      var loading = weui.loading('正在提交数据')
       uploadPecc(self.form).then(
         (response) => {
+          loading.hide()
+          weui.toast('提交成功(假的)', {
+            duration: 3000,
+            className: 'bears'
+          })
           console.log(response)
         }
       )
+      // self.form.uploadFileList.forEach(function (file) {
+      //   file.upload()
+      // })
 
       // const self = this
       // document.getElementById('uploaderBtn').addEventListener('click', function () {
