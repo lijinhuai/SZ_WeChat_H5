@@ -544,7 +544,6 @@ export default {
       weui.picker(self.hpzlList, {
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
-          console.log(result)
           self.form.hpzl = result[0].value
           self.form.hpzlText = result[0].label
         },
