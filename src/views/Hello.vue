@@ -1,6 +1,6 @@
 <template>
   <div class="page input js_show">
-    <VueCustomKeyboard :isOpen="isOpen" :defaultValue="hphmDefaultValue" :onChange="onChange" :onBlur="onBlur" :onDone="onDone"></VueCustomKeyboard>
+    <CustomKeyboard :isOpen="isOpen" :defaultValue="hphmDefaultValue" :onChange="onChange" :onBlur="onBlur" :onDone="onDone"></CustomKeyboard>
 
     <div class="page__bd">
       <div id="searchForm">
@@ -192,13 +192,12 @@
   </div>
 </template>
 <script>
-import 'weui'
 import weui from 'weui.js'
 import watermark from 'watermarkjs'
 import * as imageUtil from '@/utils/image'
 import * as dateUtil from '@/utils/date'
 
-import VueCustomKeyboard from '@/components/VueCustomKeyboard.vue'
+import CustomKeyboard from '@/components/CustomKeyboard.vue'
 
 import {
   fetchHpzlList, fetchDldmList, fetchLddmList,
@@ -271,7 +270,7 @@ export default {
     }
   },
   components: {
-    VueCustomKeyboard
+    CustomKeyboard
   },
   mounted () {
     this.initUploader()

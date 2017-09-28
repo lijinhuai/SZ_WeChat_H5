@@ -5,7 +5,12 @@
 
 // 导入Bootstrap
 // import './Bootstrap'
+
 // 导入ElementUI
 // import './ElementUI'
+
 // 导入iView
 // import './iView'
+
+// 导入Weui
+import './Weui'

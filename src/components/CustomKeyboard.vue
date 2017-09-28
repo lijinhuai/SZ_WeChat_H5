@@ -240,8 +240,8 @@ export default {
     font-size: 2.5rem;
   }
   .button {
-    margin-top: 0;
-    background-color: #cbcdd1;
+    // margin-top: 0;
+    background-color: transparent;
     &:active {
       background-color: #fff;
       i {
