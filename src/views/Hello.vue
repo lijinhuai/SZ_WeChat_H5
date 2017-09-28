@@ -3,66 +3,79 @@
     <VueCustomKeyboard :isOpen="isOpen" :defaultValue="hphmDefaultValue" :onChange="onChange" :onBlur="onBlur" :onDone="onDone"></VueCustomKeyboard>
 
     <div class="page__bd">
-
-      <div class="weui-cells weui-cells_form">
-        <div class="weui-cell">
-          <div class="weui-cell__hd">
-            <label class="weui-label">号牌号码</label>
+      <div id="searchForm">
+        <div class="weui-cells__title">手工录入信息</div>
+        <div class="weui-cells weui-cells_form">
+          <div class="weui-cell">
+            <div class="weui-cell__hd">
+              <label class="weui-label">号牌号码</label>
+            </div>
+            <div class="weui-cell__bd">
+              <input class="weui-input" type="text" onfocus="this.blur();" @click="showKeyboard" v-model="form.hphm" required="" pattern="REG_HPHM" maxlength="7" placeholder="输入号牌号码" emptytips="请输入号牌号码" notmatchtips="请输入正确的号牌号码">
+            </div>
+            <div class="weui-cell__ft">
+              <i class="weui-icon-warn"></i>
+            </div>
           </div>
-          <div class="weui-cell__bd">
-            <h1 class="weui-input weui-h1" @click="showKeyboard">{{form.hphm}}</h1>
+          <div class="weui-cell">
+            <div class="weui-cell__hd">
+              <label class="weui-label">号牌种类</label>
+            </div>
+            <div class="weui-cell__bd">
+              <input class="weui-input" type="text" onfocus="this.blur();" @click="hpzlDictPicker" v-model="form.hpzlText" required="" placeholder="选择号牌种类" emptytips="请选择号牌种类" notmatchtips="请选择正确的号牌种类">
+            </div>
+            <div class="weui-cell__ft">
+              <i class="weui-icon-warn"></i>
+            </div>
           </div>
-        </div>
-        <div class="weui-cell">
-          <div class="weui-cell__hd">
-            <label class="weui-label">号牌种类</label>
+          <div class="weui-cell" v-show="showUploadBtn">
+            <div class="weui-cell__hd">
+              <label class="weui-label">违法日期</label>
+            </div>
+            <div class="weui-cell__bd">
+              <input class="weui-input" type="text" onfocus="this.blur();" @click="modifyWfrq" v-model="form.wfrq" placeholder="选择违法日期">
+            </div>
           </div>
-          <div class="weui-cell__bd">
-            <h1 class="weui-input weui-h1" @click="hpzlDictPicker">{{form.hpzlText}}</h1>
+          <div class="weui-cell" v-show="showUploadBtn">
+            <div class="weui-cell__hd">
+              <label class="weui-label">违法时间</label>
+            </div>
+            <div class="weui-cell__bd">
+              <input class="weui-input" type="text" onfocus="this.blur();" @click="modifyWfsj" v-model="form.wfsj" placeholder="选择违法时间">
+            </div>
           </div>
-        </div>
-        <div class="weui-cell" v-bind:class="{showDiv:showUploadBtn,hideDiv:!showUploadBtn}">
-          <div class="weui-cell__hd">
-            <label class="weui-label">违法日期</label>
+          <div class="weui-cell">
+            <div class="weui-cell__hd">
+              <label class="weui-label">违法地点</label>
+            </div>
+            <div class="weui-cell__bd">
+              <input class="weui-input" type="text" onfocus="this.blur();" @click="dldmDictPicker" v-model="form.dldmText" required="" placeholder="选择违法地点" emptytips="请选择违法地点" notmatchtips="请选择正确的违法地点">
+            </div>
+            <div class="weui-cell__ft">
+              <i class="weui-icon-warn"></i>
+            </div>
           </div>
-          <div class="weui-cell__bd">
-            <h1 class="weui-input weui-h1" @click="modifyWfrq">{{form.wfrq}}</h1>
+          <div class="weui-cell">
+            <div class="weui-cell__hd">
+              <label class="weui-label">路段号码</label>
+            </div>
+            <div class="weui-cell__bd">
+              <input class="weui-input" type="text" onfocus="this.blur();" @click="lddmDictPicker" v-model="form.lddmText" required="" placeholder="选择路段号码" emptytips="请选择路段号码" notmatchtips="请选择正确的路段号码">
+            </div>
+            <div class="weui-cell__ft">
+              <i class="weui-icon-warn"></i>
+            </div>
           </div>
-        </div>
-        <div class="weui-cell" v-bind:class="{showDiv:showUploadBtn,hideDiv:!showUploadBtn}">
-          <div class="weui-cell__hd">
-            <label class="weui-label">违法时间</label>
-          </div>
-          <div class="weui-cell__bd">
-            <h1 class="weui-input weui-h1" @click="modifyWfsj">{{form.wfsj}}</h1>
-          </div>
-        </div>
-        <div class="weui-cell">
-          <div class="weui-cell__hd">
-            <label class="weui-label">违法地点</label>
-          </div>
-          <div class="weui-cell__bd">
-            <h1 class="weui-input weui-h1" @click="dldmDictPicker">{{form.dldmText}}</h1>
-          </div>
-        </div>
-        <div class="weui-cell">
-          <div class="weui-cell__hd">
-            <label class="weui-label">路段号码</label>
-          </div>
-          <div class="weui-cell__bd">
-            <h1 class="weui-input weui-h1" @click="lddmDictPicker">{{form.lddmText}}</h1>
-          </div>
-        </div>
-        <div class="weui-cell">
-          <div class="weui-cell__hd">
-            <label class="weui-label">地点描述</label>
-          </div>
-          <div class="weui-cell__bd">
-            <input class="weui-input" type="text" v-model="form.ddms" placeholder="请输入地点描述">
+          <div class="weui-cell">
+            <div class="weui-cell__hd">
+              <label class="weui-label">地点描述</label>
+            </div>
+            <div class="weui-cell__bd">
+              <input class="weui-input" type="text" v-model="form.ddms" placeholder="请输入地点描述">
+            </div>
           </div>
         </div>
       </div>
-
       <div class="weui-cells weui-cells_form" id="uploader">
         <div class="weui-cell">
           <div class="weui-cell__bd">
@@ -83,76 +96,93 @@
         </div>
       </div>
 
-      <div class="weui-cells weui-cells_form" v-bind:class="{showDiv:showUploadBtn,hideDiv:!showUploadBtn}">
-        <div class="weui-cell">
-          <div class="weui-cell__hd">
-            <label class="weui-label">车身颜色</label>
+      <div id="uploadForm" v-show="showUploadBtn">
+        <div class="weui-cells__title">系统检索信息</div>
+        <div class="weui-cells weui-cells_form">
+          <div class="weui-cell">
+            <div class="weui-cell__hd">
+              <label class="weui-label">车身颜色</label>
+            </div>
+            <div class="weui-cell__bd">
+              <input class="weui-input" type="text" onfocus="this.blur();" @click="csysDictPicker" v-model="form.csysText" required="" placeholder="选择车身颜色" emptytips="请选择车身颜色" notmatchtips="请选择正确的车身颜色">
+            </div>
+            <div class="weui-cell__ft">
+              <i class="weui-icon-warn"></i>
+            </div>
           </div>
-          <div class="weui-cell__bd">
-            <h1 class="weui-input weui-h1" @click="csysDictPicker">{{form.csysText}}</h1>
+          <div class="weui-cell">
+            <div class="weui-cell__hd">
+              <label class="weui-label">车辆类型</label>
+            </div>
+            <div class="weui-cell__bd">
+              <input class="weui-input" type="text" onfocus="this.blur();" @click="cllxDictPicker" v-model="form.cllxText" required="" placeholder="选择车辆类型" emptytips="请选择车辆类型" notmatchtips="请选择正确的车辆类型">
+            </div>
+            <div class="weui-cell__ft">
+              <i class="weui-icon-warn"></i>
+            </div>
           </div>
-        </div>
-        <div class="weui-cell">
-          <div class="weui-cell__hd">
-            <label class="weui-label">车辆类型</label>
+          <div class="weui-cell">
+            <div class="weui-cell__hd">
+              <label class="weui-label">车辆分类</label>
+            </div>
+            <div class="weui-cell__bd">
+              <input class="weui-input" type="text" onfocus="this.blur();" @click="clflDictPicker" v-model="form.clflText" required="" placeholder="选择车辆分类" emptytips="请选择车辆分类" notmatchtips="请选择正确的车辆分类">
+            </div>
+            <div class="weui-cell__ft">
+              <i class="weui-icon-warn"></i>
+            </div>
           </div>
-          <div class="weui-cell__bd">
-            <h1 class="weui-input weui-h1" @click="cllxDictPicker">{{form.cllxText}}</h1>
+          <div class="weui-cell">
+            <div class="weui-cell__hd">
+              <label class="weui-label">车主名称</label>
+            </div>
+            <div class="weui-cell__bd">
+              <input class="weui-input" type="text" v-model="form.czmc" placeholder="请输入车主名称">
+            </div>
           </div>
-        </div>
-        <div class="weui-cell">
-          <div class="weui-cell__hd">
-            <label class="weui-label">车辆分类</label>
+          <div class="weui-cell">
+            <div class="weui-cell__hd">
+              <label class="weui-label">车主地址</label>
+            </div>
+            <div class="weui-cell__bd">
+              <input class="weui-input" type="text" v-model="form.czdz" placeholder="请输入车主地址">
+            </div>
           </div>
-          <div class="weui-cell__bd">
-            <h1 class="weui-input weui-h1" @click="clflDictPicker">{{form.clflText}}</h1>
+          <div class="weui-cell">
+            <div class="weui-cell__hd">
+              <label class="weui-label">联系电话</label>
+            </div>
+            <div class="weui-cell__bd">
+              <input class="weui-input" type="number" v-model="form.lxdh" placeholder="请输入联系电话">
+            </div>
           </div>
-        </div>
-        <div class="weui-cell">
-          <div class="weui-cell__hd">
-            <label class="weui-label">车主名称</label>
+          <div class="weui-cell">
+            <div class="weui-cell__hd">
+              <label class="weui-label">车辆品牌</label>
+            </div>
+            <div class="weui-cell__bd">
+              <input class="weui-input" type="text" v-model="form.clpp" placeholder="请输入车辆品牌">
+            </div>
           </div>
-          <div class="weui-cell__bd">
-            <input class="weui-input" type="text" v-model="form.czmc" placeholder="请输入车主名称">
-          </div>
-        </div>
-        <div class="weui-cell">
-          <div class="weui-cell__hd">
-            <label class="weui-label">车主地址</label>
-          </div>
-          <div class="weui-cell__bd">
-            <input class="weui-input" type="text" v-model="form.czdz" placeholder="请输入车主地址">
-          </div>
-        </div>
-        <div class="weui-cell">
-          <div class="weui-cell__hd">
-            <label class="weui-label">联系电话</label>
-          </div>
-          <div class="weui-cell__bd">
-            <input class="weui-input" type="number" v-model="form.lxdh" placeholder="请输入联系电话">
-          </div>
-        </div>
-        <div class="weui-cell">
-          <div class="weui-cell__hd">
-            <label class="weui-label">车辆品牌</label>
-          </div>
-          <div class="weui-cell__bd">
-            <input class="weui-input" type="text" v-model="form.clpp" placeholder="请输入车辆品牌">
-          </div>
-        </div>
-        <div class="weui-cell">
-          <div class="weui-cell__hd">
-            <label class="weui-label">车辆拖移</label>
-          </div>
-          <div class="weui-cell__bd">
-            <h1 class="weui-input weui-h1" @click="cltyDictPicker">{{form.cltyText}}</h1>
+          <div class="weui-cell">
+            <div class="weui-cell__hd">
+              <label class="weui-label">车辆拖移</label>
+            </div>
+            <div class="weui-cell__bd">
+              <input class="weui-input" type="text" onfocus="this.blur();" @click="cltyDictPicker" v-model="form.cltyText" required="" placeholder="选择车辆是否拖移" emptytips="请选择车辆是否拖移">
+            </div>
+            <div class="weui-cell__ft">
+              <i class="weui-icon-warn"></i>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="weui-btn-area">
-        <a id="uploaderBtn" @click="search" class="weui-btn weui-btn_primary" v-bind:class="{showDiv:showSearchBtn,hideDiv:!showSearchBtn}">检索</a>
-        <a id="uploaderBtn" @click="upload" class="weui-btn weui-btn_primary" v-bind:class="{showDiv:showUploadBtn,hideDiv:!showUploadBtn}">提交</a>
+        <a id="uploaderBtn" v-show="showSearchBtn" @click="search" class="weui-btn weui-btn_primary" v-bind:class="{'weui-btn_loading': showLoading} ">
+          <i v-show="showLoading" class="weui-loading"></i>检索</a>
+        <a id="uploaderBtn" v-show="showUploadBtn" @click="upload" class="weui-btn weui-btn_primary" v-bind:class="{'weui-btn_loading': showLoading}">
+          <i v-show="showLoading" class="weui-loading"></i>提交</a>
       </div>
     </div>
 
@@ -185,6 +215,7 @@ export default {
       showSearchBtn: true, // 显示查询按钮
       showUploadBtn: false, // 显示提交按钮
       hphmDefaultValue: '苏E',
+      showLoading: false,
       wfsj: {
         y: '',
         M: '',
@@ -225,7 +256,18 @@ export default {
       csysList: [],
       cllxList: [],
       clflList: [],
-      cltyList: []
+      cltyList: [],
+      // 约定查询form正则
+      searchRegexp: {
+        regexp: {
+          HPHM: /^[\u4e00-\u9fa5]{1}[A-Z]{1}[A-Z_0-9]{5}$/
+        }
+      },
+      // 约定上传form正则
+      uploadRegexp: {
+        regexp: {
+        }
+      }
     }
   },
   components: {
@@ -388,6 +430,7 @@ export default {
       })
     },
     showKeyboard () {
+      // document.activeElement.blur()
       this.isOpen = true
     },
     onChange (value) {
@@ -469,68 +512,83 @@ export default {
     },
     search () {
       const self = this
-      if (self.form.hphm === '' || self.form.hphm.length !== 7 || self.form.hpzl === '' || self.form.dldm === '' || self.form.lddm === '') {
-        weui.topTips('请输入正确的字段', {
-          duration: 3000,
-          className: 'custom-classname',
-          callback: function callback () {
-            // console.log('close')
-          }
-        })
-        return
-      }
-      var loading = weui.loading('数据加载中')
-      setTimeout(() => {
-        this.showSearchBtn = false
-        this.showUploadBtn = true
-        loading.hide()
-        const now = new Date()
-        const y = now.getFullYear()
-        const M = now.getMonth() + 1
-        const d = now.getDate()
-        const H = now.getHours()
-        const m = now.getMinutes()
-        self.wfsj.y = y
-        self.wfsj.M = M
-        self.wfsj.d = d
-        self.wfsj.H = H
-        self.wfsj.m = m
+      /* form */
+      // 失去焦点时检测
+      weui.form.checkIfBlur('#searchForm', self.searchRegexp)
 
-        self.wfsj.date = `${y}-${M}-${d}`
-        self.wfsj.time = `${H}:${m}`
-      }, 1000 * 2)
+      // 表单提交
+      weui.form.validate('#searchForm', function (error) {
+        console.log(error)
+        if (!error) {
+          var loading = weui.loading('数据加载中')
+          self.showLoading = true
+          setTimeout(() => {
+            self.showLoading = false
+            self.showSearchBtn = false
+            self.showUploadBtn = true
+            loading.hide()
+            const now = new Date()
+            const y = now.getFullYear()
+            const M = now.getMonth() + 1
+            const d = now.getDate()
+            const H = now.getHours()
+            const m = now.getMinutes()
+            self.wfsj.y = y
+            self.wfsj.M = M
+            self.wfsj.d = d
+            self.wfsj.H = H
+            self.wfsj.m = m
+
+            self.wfsj.date = `${y}-${M}-${d}`
+            self.wfsj.time = `${H}:${m}`
+          }, 1000 * 2)
+        }
+      }, self.searchRegexp)
+
+      // if (self.form.hphm === '' || self.form.hphm.length !== 7 || self.form.hpzl === '' || self.form.dldm === '' || self.form.lddm === '') {
+      //   weui.topTips('请输入正确的字段', {
+      //     duration: 3000,
+      //     className: 'custom-classname',
+      //     callback: function callback () {
+      //       // console.log('close')
+      //     }
+      //   })
+      //   return
+      // }
     },
     // 手动上传按钮
     upload () {
       const self = this
-      if (self.form.hphm === '' || self.form.hphm.length !== 7 || self.form.hpzl === '' || self.form.dldm === '' ||
-        self.form.lddm === '' || self.form.csys === '' || self.form.clfl === '' || self.form.cllx === '' ||
-        self.form.clty === '') {
-        weui.topTips('请输入正确的字段', {
-          duration: 3000,
-          className: 'custom-classname',
-          callback: function callback () {
-            // console.log('close')
-          }
-        })
-        return
-      }
 
-      /* loading */
-      var loading = weui.loading('正在提交数据')
-      uploadPecc(self.form).then(
-        (response) => {
-          loading.hide()
-          weui.toast('提交成功(假的)', {
-            duration: 3000,
-            className: 'bears'
-          })
-          console.log(response)
+      // 失去焦点时检测
+      weui.form.checkIfBlur('#uploadForm', self.uploadRegexp)
+
+      // 表单提交
+      weui.form.validate('#uploadForm', function (error) {
+        console.log(error)
+        if (!error) {
+          /* loading */
+          var loading = weui.loading('正在提交数据')
+          self.showLoading = true
+          uploadPecc(self.form).then(
+            (response) => {
+              setTimeout(() => {
+                loading.hide()
+                self.showLoading = true
+                // weui.toast('提交成功(假的)', {
+                //   duration: 3000,
+                //   className: 'bears'
+                // })
+                self.$router.push('/result')
+              }, 2000)
+              console.log(response)
+            }
+          )
+          // self.form.uploadFileList.forEach(function (file) {
+          //   file.upload()
+          // })
         }
-      )
-      // self.form.uploadFileList.forEach(function (file) {
-      //   file.upload()
-      // })
+      }, self.uploadRegexp)
 
       // const self = this
       // document.getElementById('uploaderBtn').addEventListener('click', function () {
@@ -636,15 +694,5 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.weui-h1 {
-  font-weight: normal;
-}
 
-.hideDiv {
-  display: none;
-}
-
-.showDiv {
-  opacity: 1;
-}
 </style>

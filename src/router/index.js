@@ -20,6 +20,12 @@ export const constantRouterMap = [{
   component: _import('Hello')
     // hidden: true
 
+},
+{
+  path: '/result',
+  component: _import('Result')
+    // hidden: true
+
 }
   /* , {
     path: '/404',
