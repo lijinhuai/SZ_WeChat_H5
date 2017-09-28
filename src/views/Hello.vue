@@ -214,7 +214,7 @@ export default {
       showSearchBtn: true, // 显示查询按钮
       showUploadBtn: false, // 显示提交按钮
       hphmDefaultValue: '苏E',
-      showLoading: false,
+      showLoading: false, // 是否显示检索按钮和提交按钮的loading效果
       wfsj: {
         y: '',
         M: '',
@@ -256,6 +256,7 @@ export default {
       cllxList: [],
       clflList: [],
       cltyList: [],
+      uploadDir: '',
       // 约定查询form正则
       searchRegexp: {
         regexp: {
@@ -359,7 +360,7 @@ export default {
           console.log(this, data, headers)
           // $.extend(data, { test: 1 }) // 可以扩展此对象来控制上传参数
           // $.extend(headers, { Origin: 'http://127.0.0.1' }) // 可以扩展此对象来控制上传头部
-
+          data.uploadDir = self.uploadDir
           // return false // 阻止文件上传
         },
         onProgress: function (procent) {
@@ -571,21 +572,25 @@ export default {
           self.showLoading = true
           uploadPecc(self.form).then(
             (response) => {
-              setTimeout(() => {
+              if (response.data.code === '200') {
                 loading.hide()
-                self.showLoading = true
-                // weui.toast('提交成功(假的)', {
-                //   duration: 3000,
-                //   className: 'bears'
-                // })
-                self.$router.push('/result')
-              }, 2000)
-              console.log(response)
+                self.showLoading = false
+                self.form.uploadFileList.forEach(function (file) {
+                  console.log(file)
+                  file.upload()
+                })
+                // self.$router.push('/result')
+              }
+
+              // weui.toast('提交成功(假的)', {
+              //   duration: 3000,
+              //   className: 'bears'
+              // })
             }
-          )
-          // self.form.uploadFileList.forEach(function (file) {
-          //   file.upload()
-          // })
+          ).catch(() => {
+            loading.hide()
+            self.showLoading = false
+          })
         }
       }, self.uploadRegexp)
 
@@ -604,7 +609,7 @@ export default {
           self.form.hpzl = result[0].value
           self.form.hpzlText = result[0].label
         },
-        id: 'picker'
+        id: 'hpzlPicker'
       })
     },
     dldmDictPicker () {
@@ -615,7 +620,7 @@ export default {
           self.form.dldm = result[0].value
           self.form.dldmText = result[0].label
         },
-        id: 'picker'
+        id: 'dldmPicker'
       })
     },
     lddmDictPicker () {
@@ -626,7 +631,7 @@ export default {
           self.form.lddm = result[0].value
           self.form.lddmText = result[0].label
         },
-        id: 'picker'
+        id: 'lddmPicker'
       })
     },
     csysDictPicker () {
@@ -637,7 +642,7 @@ export default {
           self.form.csys = result[0].value
           self.form.csysText = result[0].label
         },
-        id: 'picker'
+        id: 'csysPicker'
       })
     },
     clflDictPicker () {
@@ -648,7 +653,7 @@ export default {
           self.form.clfl = result[0].value
           self.form.clflText = result[0].label
         },
-        id: 'picker'
+        id: 'clflPicker'
       })
     },
     cllxDictPicker () {
@@ -659,7 +664,7 @@ export default {
           self.form.cllx = result[0].value
           self.form.cllxText = result[0].label
         },
-        id: 'picker'
+        id: 'cllxPicker'
       })
     },
     cltyDictPicker () {
@@ -670,7 +675,7 @@ export default {
           self.form.clty = result[0].value
           self.form.cltyText = result[0].label
         },
-        id: 'picker'
+        id: 'cltyPicker'
       })
     }
   },
