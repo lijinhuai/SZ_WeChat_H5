@@ -46,10 +46,21 @@
           </div>
           <div class="weui-cell">
             <div class="weui-cell__hd">
+              <label class="weui-label">道路性质</label>
+            </div>
+            <div class="weui-cell__bd">
+              <input class="weui-input" type="text" onfocus="this.blur();" @click="dlxzDictPicker" v-model="form.dlxzText" required="" placeholder="选择道路性质" emptytips="请选择道路性质">
+            </div>
+            <div class="weui-cell__ft">
+              <i class="weui-icon-warn"></i>
+            </div>
+          </div>
+          <div class="weui-cell">
+            <div class="weui-cell__hd">
               <label class="weui-label">违法地点</label>
             </div>
             <div class="weui-cell__bd">
-              <input class="weui-input" type="text" onfocus="this.blur();" @click="dldmDictPicker" v-model="form.dldmText" required="" placeholder="选择违法地点" emptytips="请选择违法地点" notmatchtips="请选择正确的违法地点">
+              <input class="weui-input" type="text" onfocus="this.blur();" @click="dldmDictPicker" v-model="form.dldmText" required="" placeholder="选择违法地点" emptytips="请选择违法地点">
             </div>
             <div class="weui-cell__ft">
               <i class="weui-icon-warn"></i>
@@ -60,7 +71,7 @@
               <label class="weui-label">路段号码</label>
             </div>
             <div class="weui-cell__bd">
-              <input class="weui-input" type="text" onfocus="this.blur();" @click="lddmDictPicker" v-model="form.lddmText" required="" placeholder="选择路段号码" emptytips="请选择路段号码" notmatchtips="请选择正确的路段号码">
+              <input class="weui-input" type="text" onfocus="this.blur();" @click="lddmDictPicker" v-model="form.lddmText" required="" placeholder="选择路段号码" emptytips="请选择路段号码">
             </div>
             <div class="weui-cell__ft">
               <i class="weui-icon-warn"></i>
@@ -104,7 +115,7 @@
               <label class="weui-label">车身颜色</label>
             </div>
             <div class="weui-cell__bd">
-              <input class="weui-input" type="text" onfocus="this.blur();" @click="csysDictPicker" v-model="form.csysText" required="" placeholder="选择车身颜色" emptytips="请选择车身颜色" notmatchtips="请选择正确的车身颜色">
+              <input class="weui-input" type="text" onfocus="this.blur();" @click="csysDictPicker" v-model="form.csysText" required="" placeholder="选择车身颜色" emptytips="请选择车身颜色">
             </div>
             <div class="weui-cell__ft">
               <i class="weui-icon-warn"></i>
@@ -115,7 +126,7 @@
               <label class="weui-label">车辆类型</label>
             </div>
             <div class="weui-cell__bd">
-              <input class="weui-input" type="text" onfocus="this.blur();" @click="cllxDictPicker" v-model="form.cllxText" required="" placeholder="选择车辆类型" emptytips="请选择车辆类型" notmatchtips="请选择正确的车辆类型">
+              <input class="weui-input" type="text" onfocus="this.blur();" @click="cllxDictPicker" v-model="form.cllxText" required="" placeholder="选择车辆类型" emptytips="请选择车辆类型">
             </div>
             <div class="weui-cell__ft">
               <i class="weui-icon-warn"></i>
@@ -126,7 +137,7 @@
               <label class="weui-label">车辆分类</label>
             </div>
             <div class="weui-cell__bd">
-              <input class="weui-input" type="text" onfocus="this.blur();" @click="clflDictPicker" v-model="form.clflText" required="" placeholder="选择车辆分类" emptytips="请选择车辆分类" notmatchtips="请选择正确的车辆分类">
+              <input class="weui-input" type="text" onfocus="this.blur();" @click="clflDictPicker" v-model="form.clflText" required="" placeholder="选择车辆分类" emptytips="请选择车辆分类">
             </div>
             <div class="weui-cell__ft">
               <i class="weui-icon-warn"></i>
@@ -200,7 +211,7 @@ import * as dateUtil from '@/utils/date'
 import CustomKeyboard from '@/components/CustomKeyboard.vue'
 
 import {
-  fetchHpzlList, fetchDldmList, fetchLddmList,
+  fetchHpzlList, fetchDlxzList, fetchDldmList, fetchLddmList,
   fetchCsysList, fetchCllxList, fetchClflList, fetchCltyList,
   uploadPecc
 } from '@/api/pecc'
@@ -231,6 +242,8 @@ export default {
         hpzlText: '',
         wfrq: '',
         wfsj: '',
+        dlxz: '',
+        dlxzText: '',
         dldm: '',
         dldmText: '',
         lddm: '',
@@ -250,6 +263,7 @@ export default {
         cltyText: ''
       },
       hpzlList: [],
+      dlxzList: [],
       dldmList: [],
       lddmList: [],
       csysList: [],
@@ -278,6 +292,9 @@ export default {
     this.initGallery()
     fetchHpzlList().then(response => {
       this.hpzlList = response.data
+    })
+    fetchDlxzList().then(response => {
+      this.dlxzList = response.data
     })
     fetchDldmList().then(response => {
       this.dldmList = response.data
@@ -358,6 +375,7 @@ export default {
         },
         onBeforeSend: function (data, headers) {
           console.log(this, data, headers)
+          debugger
           // $.extend(data, { test: 1 }) // 可以扩展此对象来控制上传参数
           // $.extend(headers, { Origin: 'http://127.0.0.1' }) // 可以扩展此对象来控制上传头部
           data.uploadDir = self.uploadDir
@@ -405,6 +423,7 @@ export default {
           }
         }
         if (index >= 0) url = self.form.uploadFileList[index].url
+        // target.style = 'background-image: url(' + url + ');'
 
         var gallery = weui.gallery(url, {
           onDelete: function onDelete () {
@@ -575,8 +594,9 @@ export default {
               if (response.data.code === '200') {
                 loading.hide()
                 self.showLoading = false
+                self.uploadDir = response.data.data.uploadDir
                 self.form.uploadFileList.forEach(function (file) {
-                  console.log(file)
+                  debugger
                   file.upload()
                 })
                 // self.$router.push('/result')
@@ -610,6 +630,17 @@ export default {
           self.form.hpzlText = result[0].label
         },
         id: 'hpzlPicker'
+      })
+    },
+    dlxzDictPicker () {
+      const self = this
+      weui.picker(self.dlxzList, {
+        className: 'custom-classname',
+        onConfirm: function onConfirm (result) {
+          self.form.dlxz = result[0].value
+          self.form.dlxzText = result[0].label
+        },
+        id: 'dlxzPicker'
       })
     },
     dldmDictPicker () {

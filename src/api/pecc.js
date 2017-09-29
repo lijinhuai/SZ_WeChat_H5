@@ -6,6 +6,14 @@ export function fetchHpzlList () {
     method: 'get'
   })
 }
+
+// 查询道路性质字典
+export function fetchDlxzList () {
+  return fetch({
+    url: '/peccapi/dlxz',
+    method: 'get'
+  })
+}
 // 查询道路代码字典
 export function fetchDldmList () {
   return fetch({
