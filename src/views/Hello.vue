@@ -215,6 +215,7 @@ import {
   fetchCsysList, fetchCllxList, fetchClflList, fetchCltyList,
   uploadPecc
 } from '@/api/pecc'
+var loading
 
 export default {
   name: 'hello',
@@ -226,6 +227,7 @@ export default {
       showUploadBtn: false, // 显示提交按钮
       hphmDefaultValue: '苏E',
       showLoading: false, // 是否显示检索按钮和提交按钮的loading效果
+      uploadedCount: -1, // 已上传成功项目的数量
       wfsj: {
         y: '',
         M: '',
@@ -271,6 +273,7 @@ export default {
       clflList: [],
       cltyList: [],
       uploadDir: '',
+      ticketNumber: '',
       // 约定查询form正则
       searchRegexp: {
         regexp: {
@@ -318,15 +321,16 @@ export default {
       const self = this
       var uploadCount = 0
       weui.uploader('#uploader', {
-        url: 'http://localhost:8081/api/peccapi/uploadPeccPhoto',
+        url: 'http://172.17.122.3:8081/api/peccapi/uploadPeccPhoto',
         auto: false,
         type: 'file',
         fileVal: 'fileVal',
-        compress: {
-          width: 1600,
-          height: 1600,
-          quality: 0.8
-        },
+        compress: false,
+        // compress: {
+        //   width: 1600,
+        //   height: 1600,
+        //   quality: 0.8
+        // },
         onBeforeQueued: function (files) {
           // `this` 是轮询到的文件, `files` 是所有文件
 
@@ -344,7 +348,7 @@ export default {
             weui.alert('最多只能上传3张图片，请重新选择')
             return false
           }
-          if (uploadCount + 1 > 3) {
+          if (uploadCount + files.length > 3) {
             weui.alert('最多只能上传3张图片')
             return false
           }
@@ -357,6 +361,7 @@ export default {
           const that = this
           const dateStr = dateUtil.formatDate(new Date(), 'yyyy/MM/dd HH:mm')
           const markStr = dateStr + ' ' + self.form.dldmText
+          that.markStr = markStr
           watermark([this.url])
             .image(watermark.text.lowerRight(markStr, '48pt serif', '#FFFF00', 0.8))
             .then(function (img) {
@@ -375,10 +380,12 @@ export default {
         },
         onBeforeSend: function (data, headers) {
           console.log(this, data, headers)
-          debugger
           // $.extend(data, { test: 1 }) // 可以扩展此对象来控制上传参数
           // $.extend(headers, { Origin: 'http://127.0.0.1' }) // 可以扩展此对象来控制上传头部
+          data.index = this.id
           data.uploadDir = self.uploadDir
+          data.ticketNumber = self.ticketNumber
+          data.markStr = this.markStr
           // return false // 阻止文件上传
         },
         onProgress: function (procent) {
@@ -386,10 +393,12 @@ export default {
           // return true // 阻止默认行为，不使用默认的进度显示
         },
         onSuccess: function (ret) {
+          self.uploadedCount++
           console.log(this, ret)
           // return true // 阻止默认行为，不使用默认的成功态
         },
         onError: function (err) {
+          self.uploadedCount = -1
           console.log(this, err)
           // return true // 阻止默认行为，不使用默认的失败态
         }
@@ -441,7 +450,7 @@ export default {
               target.remove()
               // gallery.hide()
               gallery.hide(function () {
-                weui.toast('操作成功', 1000)
+                weui.toast('操作成功', 500)
               })
             })
           }
@@ -449,7 +458,6 @@ export default {
       })
     },
     showKeyboard () {
-      // document.activeElement.blur()
       this.isOpen = true
     },
     onChange (value) {
@@ -488,10 +496,13 @@ export default {
         defaultValue: [self.wfsj.y, self.wfsj.M, self.wfsj.d],
         onConfirm: function onChange (result) {
           console.log(result)
-          self.wfsj.date = result[0] + '-' + result[1] + '-' + result[2]
-          self.wfsj.y = result[0]
-          self.wfsj.M = result[1]
-          self.wfsj.d = result[2]
+          const y = result[0] < 10 ? '0' + result[0] : result[0]
+          const M = result[1] < 10 ? '0' + result[1] : result[1]
+          const d = result[2] < 10 ? '0' + result[2] : result[2]
+          self.wfsj.date = `${y}-${M}-${d}`
+          self.wfsj.y = y
+          self.wfsj.M = M
+          self.wfsj.d = d
         },
         id: 'datePicker'
       })
@@ -539,6 +550,16 @@ export default {
       weui.form.validate('#searchForm', function (error) {
         console.log(error)
         if (!error) {
+          if (self.form.uploadFileList.length !== 3) {
+            weui.topTips('请上传3张照片', {
+              duration: 3000,
+              className: 'custom-classname',
+              callback: function callback () {
+                // console.log('close')
+              }
+            })
+            return
+          }
           var loading = weui.loading('数据加载中')
           self.showLoading = true
           setTimeout(() => {
@@ -548,10 +569,10 @@ export default {
             loading.hide()
             const now = new Date()
             const y = now.getFullYear()
-            const M = now.getMonth() + 1
-            const d = now.getDate()
-            const H = now.getHours()
-            const m = now.getMinutes()
+            const M = (now.getMonth() + 1) < 10 ? '0' + (now.getMonth() + 1) : now.getMonth() + 1
+            const d = now.getDate() < 10 ? '0' + now.getDate() : now.getDate()
+            const H = now.getHours() < 10 ? '0' + now.getHours() : now.getHours()
+            const m = now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes()
             self.wfsj.y = y
             self.wfsj.M = M
             self.wfsj.d = d
@@ -563,17 +584,6 @@ export default {
           }, 1000 * 2)
         }
       }, self.searchRegexp)
-
-      // if (self.form.hphm === '' || self.form.hphm.length !== 7 || self.form.hpzl === '' || self.form.dldm === '' || self.form.lddm === '') {
-      //   weui.topTips('请输入正确的字段', {
-      //     duration: 3000,
-      //     className: 'custom-classname',
-      //     callback: function callback () {
-      //       // console.log('close')
-      //     }
-      //   })
-      //   return
-      // }
     },
     // 手动上传按钮
     upload () {
@@ -586,30 +596,26 @@ export default {
       weui.form.validate('#uploadForm', function (error) {
         console.log(error)
         if (!error) {
-          /* loading */
-          var loading = weui.loading('正在提交数据')
-          self.showLoading = true
+          self.uploadedCount = 0
           uploadPecc(self.form).then(
             (response) => {
               if (response.data.code === '200') {
-                loading.hide()
-                self.showLoading = false
+                self.uploadedCount++
                 self.uploadDir = response.data.data.uploadDir
+                self.ticketNumber = response.data.data.ticketNumber
                 self.form.uploadFileList.forEach(function (file) {
-                  debugger
                   file.upload()
                 })
-                // self.$router.push('/result')
+              } else {
+                self.uploadedCount = -1
               }
-
-              // weui.toast('提交成功(假的)', {
-              //   duration: 3000,
-              //   className: 'bears'
-              // })
             }
           ).catch(() => {
-            loading.hide()
-            self.showLoading = false
+            // weui.toast('提交成功(假的)', {
+            //   duration: 3000,
+            //   className: 'bears'
+            // })
+            self.uploadedCount = -1
           })
         }
       }, self.uploadRegexp)
@@ -721,6 +727,20 @@ export default {
     },
     'wfsj.time': function (value) {
       this.form.wfsj = value
+    },
+    uploadedCount: function (value) {
+      if (value >= 0 && value <= this.form.uploadFileList.length) {
+        /* loading */
+        loading = weui.loading('正在提交数据')
+        this.showLoading = true
+      } else if (value === this.form.uploadFileList.length + 1) {
+        loading.hide()
+        this.showLoading = false
+        // this.$router.push('/result')
+      } else if (value === -1) {
+        loading.hide()
+        this.showLoading = false
+      }
     }
   }
 
