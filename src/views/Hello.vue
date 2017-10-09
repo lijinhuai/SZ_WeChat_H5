@@ -360,12 +360,13 @@ export default {
         onQueued: function () {
           const that = this
           const dateStr = dateUtil.formatDate(new Date(), 'yyyy/MM/dd HH:mm')
-          const markStr = dateStr + ' ' + self.form.dldmText
+          const markStr = dateStr + '' + self.form.dldmText
           that.markStr = markStr
           watermark([this.url])
             .image(watermark.text.lowerRight(markStr, '48pt serif', '#FFFF00', 0.8))
             .then(function (img) {
               that.url = imageUtil.dataURItoObjectURL(img.src)
+              that.base64 = img.src
               self.form.uploadFileList.push(that)
             })
           // self.uploadFileList.push(this)
@@ -386,6 +387,7 @@ export default {
           data.uploadDir = self.uploadDir
           data.ticketNumber = self.ticketNumber
           data.markStr = this.markStr
+          data.base64 = this.base64
           // return false // 阻止文件上传
         },
         onProgress: function (procent) {
