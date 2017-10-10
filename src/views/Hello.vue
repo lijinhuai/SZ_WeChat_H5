@@ -215,6 +215,8 @@ import {
   fetchCsysList, fetchCllxList, fetchClflList, fetchCltyList,
   uploadPecc
 } from '@/api/pecc'
+
+import { BASE_API } from '@/config'
 var loading
 
 export default {
@@ -321,16 +323,16 @@ export default {
       const self = this
       var uploadCount = 0
       weui.uploader('#uploader', {
-        url: 'http://172.17.122.3:8081/api/peccapi/uploadPeccPhoto',
+        url: BASE_API + 'peccapi/uploadPeccPhoto',
         auto: false,
         type: 'file',
         fileVal: 'fileVal',
-        compress: false,
-        // compress: {
-        //   width: 1600,
-        //   height: 1600,
-        //   quality: 0.8
-        // },
+        // compress: false,
+        compress: {
+          width: 1600,
+          height: 1600,
+          quality: 0.8
+        },
         onBeforeQueued: function (files) {
           // `this` 是轮询到的文件, `files` 是所有文件
 
@@ -364,7 +366,7 @@ export default {
           const markStr = dateStr
           that.markStr = markStr
           watermark([this.url])
-            .image(watermark.text.lowerRight(markStr, '48pt serif', '#FFFF00', 0.8))
+            .image(watermark.text.lowerRight(markStr + ' ' + self.form.dldmText, '48pt serif', '#FFFF00', 0.8))
             .then(function (img) {
               that.url = imageUtil.dataURItoObjectURL(img.src)
               // that.base64 = img.src
@@ -498,7 +500,6 @@ export default {
         cron: '* * *',
         defaultValue: [self.wfsj.y, self.wfsj.M, self.wfsj.d],
         onConfirm: function onChange (result) {
-          console.log(result)
           const y = result[0] < 10 ? '0' + result[0] : result[0]
           const M = result[1] < 10 ? '0' + result[1] : result[1]
           const d = result[2] < 10 ? '0' + result[2] : result[2]
@@ -739,7 +740,7 @@ export default {
       } else if (value === this.form.uploadFileList.length + 1) {
         loading.hide()
         this.showLoading = false
-        // this.$router.push('/result')
+        this.$router.push('/result')
       } else if (value === -1) {
         loading.hide()
         this.showLoading = false

@@ -25,7 +25,14 @@ export const constantRouterMap = [{
   path: '/result',
   component: _import('Result')
     // hidden: true
-
+},
+{
+  path: '/success',
+  component: _import('Success')
+},
+{
+  path: '/warn',
+  component: _import('Warn')
 }
   /* , {
     path: '/404',
@@ -40,7 +47,7 @@ export const constantRouterMap = [{
 ]
 
 export default new Router({
-  // mode: 'history', //后端支持可开
+  mode: 'history', // 后端支持可开
   scrollBehavior: () => ({
     y: 0
   }),
