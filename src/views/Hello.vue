@@ -266,14 +266,16 @@ export default {
         clty: '',
         cltyText: ''
       },
-      hpzlList: [],
-      dlxzList: [],
-      dldmList: [],
-      lddmList: [],
-      csysList: [],
-      cllxList: [],
-      clflList: [],
-      cltyList: [],
+      dict: {
+        hpzlList: [],
+        dlxzList: [],
+        dldmList: [],
+        lddmList: [],
+        csysList: [],
+        cllxList: [],
+        clflList: [],
+        cltyList: []
+      },
       uploadDir: '',
       ticketNumber: '',
       // 约定查询form正则
@@ -296,25 +298,22 @@ export default {
     this.initUploader()
     this.initGallery()
     fetchHpzlList().then(response => {
-      this.hpzlList = response.data
+      this.dict.hpzlList = response.data
     })
     fetchDlxzList().then(response => {
-      this.dlxzList = response.data
-    })
-    fetchDldmList().then(response => {
-      this.dldmList = response.data
+      this.dict.dlxzList = response.data
     })
     fetchCsysList().then(response => {
-      this.csysList = response.data
+      this.dict.csysList = response.data
     })
     fetchClflList().then(response => {
-      this.clflList = response.data
+      this.dict.clflList = response.data
     })
     fetchCllxList().then(response => {
-      this.cllxList = response.data
+      this.dict.cllxList = response.data
     })
     fetchCltyList().then(response => {
-      this.cltyList = response.data
+      this.dict.cltyList = response.data
     })
   },
   methods: {
@@ -474,8 +473,13 @@ export default {
     onDone () {
       this.isOpen = false
     },
+    queryDldmist () {
+      fetchDldmList({ 'dlxz': this.form.dlxz }).then(response => {
+        this.dict.dldmList = response.data
+      })
+    },
     queryLddmist () {
-      fetchLddmList({ 'dldm': this.form.dldm }).then(response => {
+      fetchLddmList({ 'dlxz': this.form.dlxz, 'dldm': this.form.dldm }).then(response => {
         this.lddmList = response.data
       })
     },
@@ -633,7 +637,7 @@ export default {
     },
     hpzlDictPicker () {
       const _self = this
-      weui.picker(_self.hpzlList, {
+      weui.picker(_self.dict.hpzlList, {
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.hpzl = result[0].value
@@ -644,7 +648,7 @@ export default {
     },
     dlxzDictPicker () {
       const _self = this
-      weui.picker(_self.dlxzList, {
+      weui.picker(_self.dict.dlxzList, {
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.dlxz = result[0].value
@@ -655,7 +659,7 @@ export default {
     },
     dldmDictPicker () {
       const _self = this
-      weui.picker(_self.dldmList, {
+      weui.picker(_self.dict.dldmList, {
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.dldm = result[0].value
@@ -677,7 +681,7 @@ export default {
     },
     csysDictPicker () {
       const _self = this
-      weui.picker(_self.csysList, {
+      weui.picker(_self.dict.csysList, {
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.csys = result[0].value
@@ -688,7 +692,7 @@ export default {
     },
     clflDictPicker () {
       const _self = this
-      weui.picker(_self.clflList, {
+      weui.picker(_self.dict.clflList, {
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.clfl = result[0].value
@@ -699,7 +703,7 @@ export default {
     },
     cllxDictPicker () {
       const _self = this
-      weui.picker(_self.cllxList, {
+      weui.picker(_self.dict.cllxList, {
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.cllx = result[0].value
@@ -710,7 +714,7 @@ export default {
     },
     cltyDictPicker () {
       const _self = this
-      weui.picker(_self.cltyList, {
+      weui.picker(_self.dict.cltyList, {
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.clty = result[0].value
@@ -721,6 +725,14 @@ export default {
     }
   },
   watch: {
+    'form.dlxz': function (value) {
+      this.queryDldmist()
+      this.form.dldm = ''
+      this.form.dldmText = ''
+      this.lddmList = []
+      this.form.lddm = ''
+      this.form.lddmText = ''
+    },
     'form.dldm': function (value) {
       this.queryLddmist()
       this.form.lddm = ''

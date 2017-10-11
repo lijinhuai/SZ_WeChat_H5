@@ -15,10 +15,11 @@ export function fetchDlxzList () {
   })
 }
 // 查询道路代码字典
-export function fetchDldmList () {
+export function fetchDldmList (params) {
   return fetch({
     url: '/peccapi/dldm',
-    method: 'get'
+    method: 'get',
+    params: params
   })
 }
 
