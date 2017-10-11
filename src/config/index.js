@@ -1,1 +1,1 @@
-export const BASE_API = 'http://172.17.122.3:8081/api/'
+export const BASE_API = process.env.BASE_API

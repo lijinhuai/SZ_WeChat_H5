@@ -19,7 +19,6 @@ export const constantRouterMap = [{
   path: '/',
   component: _import('Hello')
     // hidden: true
-
 },
 {
   path: '/result',

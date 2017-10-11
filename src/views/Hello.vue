@@ -94,7 +94,7 @@
               <div class="weui-uploader__hd">
                 <p class="weui-uploader__title">图片上传</p>
                 <div class="weui-uploader__info">
-                  <span id="uploadCount">{{form.uploadFileList.length}}</span>/{{maxPicAmounts}}</div>
+                  <span id="uploadCount">{{uploadFileList.length}}</span>/{{maxPicAmounts}}</div>
               </div>
               <div class="weui-uploader__bd">
                 <ul class="weui-uploader__files" id="uploaderFiles"></ul>
@@ -239,8 +239,8 @@ export default {
         date: '',
         time: ''
       },
+      uploadFileList: [], // 待上传的图片列表
       form: {
-        uploadFileList: [], // 待上传的图片列表
         hphm: '苏E',
         hpzl: '',
         hpzlText: '',
@@ -320,7 +320,7 @@ export default {
   methods: {
     // 图片手动上传
     initUploader () {
-      const self = this
+      const _self = this
       var uploadCount = 0
       weui.uploader('#uploader', {
         url: BASE_API + 'peccapi/uploadPeccPhoto',
@@ -336,7 +336,7 @@ export default {
         onBeforeQueued: function (files) {
           // `this` 是轮询到的文件, `files` 是所有文件
 
-          uploadCount = self.form.uploadFileList.length
+          uploadCount = _self.uploadFileList.length
 
           if (['image/jpg', 'image/jpeg', 'image/png', 'image/gif'].indexOf(this.type) < 0) {
             weui.alert('请上传图片')
@@ -362,17 +362,17 @@ export default {
         onQueued: function () {
           const that = this
           const dateStr = dateUtil.formatDate(new Date(), 'yyyy/MM/dd HH:mm')
-          // const markStr = dateStr + ' ' + self.form.dldmText
+          // const markStr = dateStr + ' ' + _self.form.dldmText
           const markStr = dateStr
           that.markStr = markStr
           watermark([this.url])
-            .image(watermark.text.lowerRight(markStr + ' ' + self.form.dldmText, '48pt serif', '#FFFF00', 0.8))
+            .image(watermark.text.lowerRight(markStr + ' ' + _self.form.dldmText, '48pt serif', '#FFFF00', 0.8))
             .then(function (img) {
               that.url = imageUtil.dataURItoObjectURL(img.src)
               // that.base64 = img.src
-              self.form.uploadFileList.push(that)
+              _self.uploadFileList.push(that)
             })
-          // self.uploadFileList.push(this)
+          // _self.uploadFileList.push(this)
 
           // console.log(this.status) // 文件的状态：'ready', 'progress', 'success', 'fail'
           // console.log(this.base64) // 如果是base64上传，file.base64可以获得文件的base64
@@ -387,9 +387,9 @@ export default {
           // $.extend(data, { test: 1 }) // 可以扩展此对象来控制上传参数
           // $.extend(headers, { Origin: 'http://127.0.0.1' }) // 可以扩展此对象来控制上传头部
           data.index = this.id
-          data.uploadDir = self.uploadDir
-          data.ticketNumber = self.ticketNumber
-          data.markStr = this.markStr + ' ' + self.form.dldmText
+          data.uploadDir = _self.uploadDir
+          data.ticketNumber = _self.ticketNumber
+          data.markStr = this.markStr + ' ' + _self.form.dldmText
           // data.base64 = this.base64
           // return false // 阻止文件上传
         },
@@ -398,12 +398,12 @@ export default {
           // return true // 阻止默认行为，不使用默认的进度显示
         },
         onSuccess: function (ret) {
-          self.uploadedCount++
+          _self.uploadedCount++
           console.log(this, ret)
           // return true // 阻止默认行为，不使用默认的成功态
         },
         onError: function (err) {
-          self.uploadedCount = -1
+          _self.uploadedCount = -1
           console.log(this, err)
           // return true // 阻止默认行为，不使用默认的失败态
         }
@@ -411,7 +411,7 @@ export default {
     },
     // 缩略图预览
     initGallery () {
-      const self = this
+      const _self = this
       document.querySelector('#uploaderFiles').addEventListener('click', function (e) {
         var target = e.target
 
@@ -429,28 +429,28 @@ export default {
 
         // 将url改成修改添加水印后的base64图片
         var index
-        for (var i = 0, len = self.form.uploadFileList.length; i < len; ++i) {
-          var file = self.form.uploadFileList[i]
+        for (var i = 0, len = _self.uploadFileList.length; i < len; ++i) {
+          var file = _self.uploadFileList[i]
           if (file.id === parseInt(id)) {
             index = i
             break
           }
         }
-        if (index >= 0) url = self.form.uploadFileList[index].url
+        if (index >= 0) url = _self.uploadFileList[index].url
         // target.style = 'background-image: url(' + url + ');'
 
         var gallery = weui.gallery(url, {
           onDelete: function onDelete () {
             weui.confirm('确定删除该图片？', function () {
               var index
-              for (var i = 0, len = self.form.uploadFileList.length; i < len; ++i) {
-                var file = self.form.uploadFileList[i]
+              for (var i = 0, len = _self.uploadFileList.length; i < len; ++i) {
+                var file = _self.uploadFileList[i]
                 if (file.id === parseInt(id)) {
                   index = i
                   break
                 }
               }
-              if (index >= 0) self.form.uploadFileList.splice(index, 1)
+              if (index >= 0) _self.uploadFileList.splice(index, 1)
 
               target.remove()
               // gallery.hide()
@@ -480,7 +480,7 @@ export default {
       })
     },
     modifyWfrq () {
-      const self = this
+      const _self = this
       weui.datePicker({
         start: new Date(),
         end: '2030-12-29',
@@ -498,21 +498,21 @@ export default {
         *  * * 3                每周三
         */
         cron: '* * *',
-        defaultValue: [self.wfsj.y, self.wfsj.M, self.wfsj.d],
+        defaultValue: [_self.wfsj.y, _self.wfsj.M, _self.wfsj.d],
         onConfirm: function onChange (result) {
           const y = result[0] < 10 ? '0' + result[0] : result[0]
           const M = result[1] < 10 ? '0' + result[1] : result[1]
           const d = result[2] < 10 ? '0' + result[2] : result[2]
-          self.wfsj.date = `${y}-${M}-${d}`
-          self.wfsj.y = y
-          self.wfsj.M = M
-          self.wfsj.d = d
+          _self.wfsj.date = `${y}-${M}-${d}`
+          _self.wfsj.y = y
+          _self.wfsj.M = M
+          _self.wfsj.d = d
         },
         id: 'datePicker'
       })
     },
     modifyWfsj () {
-      const self = this
+      const _self = this
       var hours = []
       var minites = []
       var symbol = [{ label: ':', value: 0 }]
@@ -534,27 +534,27 @@ export default {
       }
 
       weui.picker(hours, symbol, minites, {
-        defaultValue: [self.wfsj.H, 0, self.wfsj.m],
+        defaultValue: [_self.wfsj.H, 0, _self.wfsj.m],
         onConfirm: function (result) {
           var time = result[0].label + ':' + result[2].label
-          self.wfsj.time = time
-          self.wfsj.H = result[0].label
-          self.wfsj.m = result[1].label
+          _self.wfsj.time = time
+          _self.wfsj.H = result[0].label
+          _self.wfsj.m = result[1].label
         },
         id: 'timePicker'
       })
     },
     search () {
-      const self = this
+      const _self = this
       /* form */
       // 失去焦点时检测
-      weui.form.checkIfBlur('#searchForm', self.searchRegexp)
+      weui.form.checkIfBlur('#searchForm', _self.searchRegexp)
 
       // 表单提交
       weui.form.validate('#searchForm', function (error) {
         console.log(error)
         if (!error) {
-          if (self.form.uploadFileList.length !== 3) {
+          if (_self.uploadFileList.length !== 3) {
             weui.topTips('请上传3张照片', {
               duration: 3000,
               className: 'custom-classname',
@@ -565,11 +565,11 @@ export default {
             return
           }
           var loading = weui.loading('数据加载中')
-          self.showLoading = true
+          _self.showLoading = true
           setTimeout(() => {
-            self.showLoading = false
-            self.showSearchBtn = false
-            self.showUploadBtn = true
+            _self.showLoading = false
+            _self.showSearchBtn = false
+            _self.showUploadBtn = true
             loading.hide()
             const now = new Date()
             const y = now.getFullYear()
@@ -577,41 +577,41 @@ export default {
             const d = now.getDate() < 10 ? '0' + now.getDate() : now.getDate()
             const H = now.getHours() < 10 ? '0' + now.getHours() : now.getHours()
             const m = now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes()
-            self.wfsj.y = y
-            self.wfsj.M = M
-            self.wfsj.d = d
-            self.wfsj.H = H
-            self.wfsj.m = m
+            _self.wfsj.y = y
+            _self.wfsj.M = M
+            _self.wfsj.d = d
+            _self.wfsj.H = H
+            _self.wfsj.m = m
 
-            self.wfsj.date = `${y}-${M}-${d}`
-            self.wfsj.time = `${H}:${m}`
+            _self.wfsj.date = `${y}-${M}-${d}`
+            _self.wfsj.time = `${H}:${m}`
           }, 1000 * 2)
         }
-      }, self.searchRegexp)
+      }, _self.searchRegexp)
     },
     // 手动上传按钮
     upload () {
-      const self = this
+      const _self = this
 
       // 失去焦点时检测
-      weui.form.checkIfBlur('#uploadForm', self.uploadRegexp)
+      weui.form.checkIfBlur('#uploadForm', _self.uploadRegexp)
 
       // 表单提交
       weui.form.validate('#uploadForm', function (error) {
         console.log(error)
         if (!error) {
-          self.uploadedCount = 0
-          uploadPecc(self.form).then(
+          _self.uploadedCount = 0
+          uploadPecc(_self.form).then(
             (response) => {
               if (response.data.code === '200') {
-                self.uploadedCount++
-                self.uploadDir = response.data.data.uploadDir
-                self.ticketNumber = response.data.data.ticketNumber
-                self.form.uploadFileList.forEach(function (file) {
+                _self.uploadedCount++
+                _self.uploadDir = response.data.data.uploadDir
+                _self.ticketNumber = response.data.data.ticketNumber
+                _self.uploadFileList.forEach(function (file) {
                   file.upload()
                 })
               } else {
-                self.uploadedCount = -1
+                _self.uploadedCount = -1
               }
             }
           ).catch(() => {
@@ -619,102 +619,102 @@ export default {
             //   duration: 3000,
             //   className: 'bears'
             // })
-            self.uploadedCount = -1
+            _self.uploadedCount = -1
           })
         }
-      }, self.uploadRegexp)
+      }, _self.uploadRegexp)
 
-      // const self = this
+      // const _self = this
       // document.getElementById('uploaderBtn').addEventListener('click', function () {
-      //   self.form.uploadFileList.forEach(function (file) {
+      //   _self.uploadFileList.forEach(function (file) {
       //     file.upload()
       //   })
       // })
     },
     hpzlDictPicker () {
-      const self = this
-      weui.picker(self.hpzlList, {
+      const _self = this
+      weui.picker(_self.hpzlList, {
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
-          self.form.hpzl = result[0].value
-          self.form.hpzlText = result[0].label
+          _self.form.hpzl = result[0].value
+          _self.form.hpzlText = result[0].label
         },
         id: 'hpzlPicker'
       })
     },
     dlxzDictPicker () {
-      const self = this
-      weui.picker(self.dlxzList, {
+      const _self = this
+      weui.picker(_self.dlxzList, {
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
-          self.form.dlxz = result[0].value
-          self.form.dlxzText = result[0].label
+          _self.form.dlxz = result[0].value
+          _self.form.dlxzText = result[0].label
         },
         id: 'dlxzPicker'
       })
     },
     dldmDictPicker () {
-      const self = this
-      weui.picker(self.dldmList, {
+      const _self = this
+      weui.picker(_self.dldmList, {
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
-          self.form.dldm = result[0].value
-          self.form.dldmText = result[0].label
+          _self.form.dldm = result[0].value
+          _self.form.dldmText = result[0].label
         },
         id: 'dldmPicker'
       })
     },
     lddmDictPicker () {
-      const self = this
-      weui.picker(self.lddmList, {
+      const _self = this
+      weui.picker(_self.lddmList, {
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
-          self.form.lddm = result[0].value
-          self.form.lddmText = result[0].label
+          _self.form.lddm = result[0].value
+          _self.form.lddmText = result[0].label
         },
         id: 'lddmPicker'
       })
     },
     csysDictPicker () {
-      const self = this
-      weui.picker(self.csysList, {
+      const _self = this
+      weui.picker(_self.csysList, {
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
-          self.form.csys = result[0].value
-          self.form.csysText = result[0].label
+          _self.form.csys = result[0].value
+          _self.form.csysText = result[0].label
         },
         id: 'csysPicker'
       })
     },
     clflDictPicker () {
-      const self = this
-      weui.picker(self.clflList, {
+      const _self = this
+      weui.picker(_self.clflList, {
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
-          self.form.clfl = result[0].value
-          self.form.clflText = result[0].label
+          _self.form.clfl = result[0].value
+          _self.form.clflText = result[0].label
         },
         id: 'clflPicker'
       })
     },
     cllxDictPicker () {
-      const self = this
-      weui.picker(self.cllxList, {
+      const _self = this
+      weui.picker(_self.cllxList, {
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
-          self.form.cllx = result[0].value
-          self.form.cllxText = result[0].label
+          _self.form.cllx = result[0].value
+          _self.form.cllxText = result[0].label
         },
         id: 'cllxPicker'
       })
     },
     cltyDictPicker () {
-      const self = this
-      weui.picker(self.cltyList, {
+      const _self = this
+      weui.picker(_self.cltyList, {
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
-          self.form.clty = result[0].value
-          self.form.cltyText = result[0].label
+          _self.form.clty = result[0].value
+          _self.form.cltyText = result[0].label
         },
         id: 'cltyPicker'
       })
@@ -733,17 +733,18 @@ export default {
       this.form.wfsj = value
     },
     uploadedCount: function (value) {
-      if (value >= 0 && value <= this.form.uploadFileList.length) {
+      if (value >= 0 && value <= this.uploadFileList.length) {
         /* loading */
         loading = weui.loading('正在提交数据')
         this.showLoading = true
-      } else if (value === this.form.uploadFileList.length + 1) {
+      } else if (value === this.uploadFileList.length + 1) {
         loading.hide()
         this.showLoading = false
-        this.$router.push('/result')
+        this.$router.push('/success')
       } else if (value === -1) {
         loading.hide()
         this.showLoading = false
+        this.$router.push('/warn')
       }
     }
   }
