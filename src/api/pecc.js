@@ -72,3 +72,11 @@ export function uploadPecc (data) {
     data: data
   })
 }
+
+export function fetchVehicleInfo (params) {
+  return fetch({
+    url: '/peccapi/vehcileInfo',
+    method: 'get',
+    params: params
+  })
+}

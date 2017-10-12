@@ -200,6 +200,14 @@
     <div class="weui-footer">
       <p class="weui-footer__text">Copyright © 2001-2017 苏州广达科技有限公司</p>
     </div>
+
+    <div v-show="showWarnToast">
+      <div class="weui-mask_transparent"></div>
+      <div class="weui-toast">
+        <i class="weui-icon-warn weui-icon_msg-primary weui-icon_toast"></i>
+        <p class="weui-toast__content">未检索到信息</p>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -212,7 +220,7 @@ import CustomKeyboard from '@/components/CustomKeyboard.vue'
 
 import {
   fetchHpzlList, fetchDlxzList, fetchDldmList, fetchLddmList,
-  fetchCsysList, fetchCllxList, fetchClflList, fetchCltyList,
+  fetchCsysList, fetchCllxList, fetchClflList, fetchCltyList, fetchVehicleInfo,
   uploadPecc
 } from '@/api/pecc'
 
@@ -227,6 +235,7 @@ export default {
       isOpen: false, // 键盘是否打开
       showSearchBtn: true, // 显示查询按钮
       showUploadBtn: false, // 显示提交按钮
+      showWarnToast: false,
       hphmDefaultValue: '苏E',
       showLoading: false, // 是否显示检索按钮和提交按钮的loading效果
       uploadedCount: -1, // 已上传成功项目的数量
@@ -385,7 +394,15 @@ export default {
           console.log(this, data, headers)
           // $.extend(data, { test: 1 }) // 可以扩展此对象来控制上传参数
           // $.extend(headers, { Origin: 'http://127.0.0.1' }) // 可以扩展此对象来控制上传头部
-          data.index = this.id
+          var index
+          for (var i = 0, len = _self.uploadFileList.length; i < len; ++i) {
+            var file = _self.uploadFileList[i]
+            if (file.id === parseInt(this.id)) {
+              index = i + 1
+              break
+            }
+          }
+          data.index = index
           data.uploadDir = _self.uploadDir
           data.ticketNumber = _self.ticketNumber
           data.markStr = this.markStr + ' ' + _self.form.dldmText
@@ -474,13 +491,21 @@ export default {
       this.isOpen = false
     },
     queryDldmist () {
+      loading = weui.loading('字典加载中')
       fetchDldmList({ 'dlxz': this.form.dlxz }).then(response => {
         this.dict.dldmList = response.data
+        loading.hide()
+      }).catch(() => {
+        loading.hide()
       })
     },
     queryLddmist () {
+      loading = weui.loading('字典数据加载中')
       fetchLddmList({ 'dlxz': this.form.dlxz, 'dldm': this.form.dldm }).then(response => {
-        this.lddmList = response.data
+        this.dict.lddmList = response.data
+        loading.hide()
+      }).catch(() => {
+        loading.hide()
       })
     },
     modifyWfrq () {
@@ -568,30 +593,64 @@ export default {
             })
             return
           }
-          var loading = weui.loading('数据加载中')
+          loading = weui.loading('数据加载中')
           _self.showLoading = true
-          setTimeout(() => {
-            _self.showLoading = false
-            _self.showSearchBtn = false
-            _self.showUploadBtn = true
-            loading.hide()
-            const now = new Date()
-            const y = now.getFullYear()
-            const M = (now.getMonth() + 1) < 10 ? '0' + (now.getMonth() + 1) : now.getMonth() + 1
-            const d = now.getDate() < 10 ? '0' + now.getDate() : now.getDate()
-            const H = now.getHours() < 10 ? '0' + now.getHours() : now.getHours()
-            const m = now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes()
-            _self.wfsj.y = y
-            _self.wfsj.M = M
-            _self.wfsj.d = d
-            _self.wfsj.H = H
-            _self.wfsj.m = m
 
-            _self.wfsj.date = `${y}-${M}-${d}`
-            _self.wfsj.time = `${H}:${m}`
-          }, 1000 * 2)
+          fetchVehicleInfo({ 'hpzl': _self.form.hpzl, 'hphm': _self.form.hphm }).then(response => {
+            if (response.data.code === '200') {
+              for (var i in _self.dict.csysList) {
+                if (_self.dict.csysList[i].value === response.data.data.csys) {
+                  _self.form.csys = _self.dict.csysList[i].value
+                  _self.form.csysText = _self.dict.csysList[i].label
+                }
+              }
+              for (var j in _self.dict.cllxList) {
+                if (_self.dict.cllxList[j].value === response.data.data.cllx) {
+                  _self.form.cllx = _self.dict.cllxList[j].value
+                  _self.form.cllxText = _self.dict.cllxList[j].label
+                }
+              }
+              _self.form.czmc = response.data.data.czmc
+              _self.form.czdz = response.data.data.czdz
+              _self.form.lxdh = response.data.data.lxdh
+              _self.form.clpp = response.data.data.clpp
+            } else {
+              _self.showWarnToast = true
+              setTimeout(() => {
+                _self.showWarnToast = false
+              }, 2000)
+            }
+            _self.searchEnd()
+          }).catch(() => {
+            _self.showWarnToast = true
+            setTimeout(() => {
+              _self.showWarnToast = false
+            }, 2000)
+            _self.searchEnd()
+          })
         }
       }, _self.searchRegexp)
+    },
+    searchEnd () {
+      const _self = this
+      _self.showLoading = false
+      _self.showSearchBtn = false
+      _self.showUploadBtn = true
+      loading.hide()
+      const now = new Date()
+      const y = now.getFullYear()
+      const M = (now.getMonth() + 1) < 10 ? '0' + (now.getMonth() + 1) : now.getMonth() + 1
+      const d = now.getDate() < 10 ? '0' + now.getDate() : now.getDate()
+      const H = now.getHours() < 10 ? '0' + now.getHours() : now.getHours()
+      const m = now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes()
+      _self.wfsj.y = y
+      _self.wfsj.M = M
+      _self.wfsj.d = d
+      _self.wfsj.H = H
+      _self.wfsj.m = m
+
+      _self.wfsj.date = `${y}-${M}-${d}`
+      _self.wfsj.time = `${H}:${m}`
     },
     // 手动上传按钮
     upload () {
@@ -638,6 +697,7 @@ export default {
     hpzlDictPicker () {
       const _self = this
       weui.picker(_self.dict.hpzlList, {
+        defaultValue: [_self.dict.hpzlList[0].value],
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.hpzl = result[0].value
@@ -649,6 +709,7 @@ export default {
     dlxzDictPicker () {
       const _self = this
       weui.picker(_self.dict.dlxzList, {
+        defaultValue: [_self.dict.dlxzList[0].value],
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.dlxz = result[0].value
@@ -659,7 +720,15 @@ export default {
     },
     dldmDictPicker () {
       const _self = this
+      if (_self.form.dlxz === '') {
+        weui.alert('请先选择道路性质', function () {
+        }, {
+          title: '警告'
+        })
+        return
+      }
       weui.picker(_self.dict.dldmList, {
+        defaultValue: [_self.dict.dldmList[0].value],
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.dldm = result[0].value
@@ -670,7 +739,22 @@ export default {
     },
     lddmDictPicker () {
       const _self = this
-      weui.picker(_self.lddmList, {
+      if (_self.form.dlxz === '') {
+        weui.alert('请先选择道路性质', function () {
+        }, {
+          title: '警告'
+        })
+        return
+      }
+      if (_self.form.dldm === '') {
+        weui.alert('请先选择违法地点', function () {
+        }, {
+          title: '警告'
+        })
+        return
+      }
+      weui.picker(_self.dict.lddmList, {
+        defaultValue: [_self.dict.lddmList[0].value],
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.lddm = result[0].value
@@ -682,6 +766,7 @@ export default {
     csysDictPicker () {
       const _self = this
       weui.picker(_self.dict.csysList, {
+        defaultValue: [_self.dict.csysList[0].value],
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.csys = result[0].value
@@ -693,6 +778,7 @@ export default {
     clflDictPicker () {
       const _self = this
       weui.picker(_self.dict.clflList, {
+        defaultValue: [_self.dict.clflList[0].value],
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.clfl = result[0].value
@@ -704,6 +790,7 @@ export default {
     cllxDictPicker () {
       const _self = this
       weui.picker(_self.dict.cllxList, {
+        defaultValue: [_self.dict.cllxList[0].value],
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.cllx = result[0].value
@@ -715,6 +802,7 @@ export default {
     cltyDictPicker () {
       const _self = this
       weui.picker(_self.dict.cltyList, {
+        defaultValue: [_self.dict.cltyList[0].value],
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.clty = result[0].value
@@ -729,7 +817,7 @@ export default {
       this.queryDldmist()
       this.form.dldm = ''
       this.form.dldmText = ''
-      this.lddmList = []
+      this.dict.lddmList = []
       this.form.lddm = ''
       this.form.lddmText = ''
     },
@@ -766,5 +854,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+.weui-icon_msg-primary {
+  font-size: 53px;
+}
 </style>
