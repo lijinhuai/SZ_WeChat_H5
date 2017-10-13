@@ -218,14 +218,12 @@ import * as dateUtil from '@/utils/date'
 
 import CustomKeyboard from '@/components/CustomKeyboard.vue'
 
-import {
-  fetchHpzlList, fetchDlxzList, fetchDldmList, fetchLddmList,
-  fetchCsysList, fetchCllxList, fetchClflList, fetchCltyList, fetchVehicleInfo,
-  uploadPecc
-} from '@/api/pecc'
+import { fetchVehicleInfo, uploadPecc } from '@/api/pecc'
+
+import { mapGetters, mapActions } from 'vuex'
 
 import { BASE_API } from '@/config'
-var loading
+var _loading
 
 export default {
   name: 'hello',
@@ -276,14 +274,8 @@ export default {
         cltyText: ''
       },
       dict: {
-        hpzlList: [],
-        dlxzList: [],
         dldmList: [],
-        lddmList: [],
-        csysList: [],
-        cllxList: [],
-        clflList: [],
-        cltyList: []
+        lddmList: []
       },
       uploadDir: '',
       ticketNumber: '',
@@ -303,29 +295,49 @@ export default {
   components: {
     CustomKeyboard
   },
+  computed: {
+    ...mapGetters({
+      hpzlList: 'hpzlList',
+      dlxzList: 'dlxzList',
+      ptDldmList: 'ptDldmList',
+      ptLddmList: 'ptLddmList',
+      zdDldmList: 'zdDldmList',
+      zdLddmList: 'zdLddmList',
+      csysList: 'csysList',
+      clflList: 'clflList',
+      cllxList: 'cllxList',
+      cltyList: 'cltyList'
+    })
+  },
   mounted () {
     this.initUploader()
     this.initGallery()
-    fetchHpzlList().then(response => {
-      this.dict.hpzlList = response.data
-    })
-    fetchDlxzList().then(response => {
-      this.dict.dlxzList = response.data
-    })
-    fetchCsysList().then(response => {
-      this.dict.csysList = response.data
-    })
-    fetchClflList().then(response => {
-      this.dict.clflList = response.data
-    })
-    fetchCllxList().then(response => {
-      this.dict.cllxList = response.data
-    })
-    fetchCltyList().then(response => {
-      this.dict.cltyList = response.data
-    })
+  },
+  created () {
+    this.setHpzlDict()
+    this.setDlxzDict()
+    this.setPtDldmDict()
+    this.setPtLddmDict()
+    this.setZdDldmDict()
+    this.setZdLddmDict()
+    this.setCsysDict()
+    this.setCllxDict()
+    this.setClflDict()
+    this.setCltyDict()
   },
   methods: {
+    ...mapActions({
+      setHpzlDict: 'setHpzlDict', // 将 `this.setHpzlDict()` 映射为 `this.$store.dispatch('setHpzlDict')`
+      setDlxzDict: 'setDlxzDict',
+      setPtDldmDict: 'setPtDldmDict',
+      setPtLddmDict: 'setPtLddmDict',
+      setZdDldmDict: 'setZdDldmDict',
+      setZdLddmDict: 'setZdLddmDict',
+      setCsysDict: 'setCsysDict',
+      setCllxDict: 'setCllxDict',
+      setClflDict: 'setClflDict',
+      setCltyDict: 'setCltyDict'
+    }),
     // 图片手动上传
     initUploader () {
       const _self = this
@@ -491,22 +503,34 @@ export default {
       this.isOpen = false
     },
     queryDldmist () {
-      loading = weui.loading('字典加载中')
-      fetchDldmList({ 'dlxz': this.form.dlxz }).then(response => {
-        this.dict.dldmList = response.data
-        loading.hide()
-      }).catch(() => {
-        loading.hide()
-      })
+      const _self = this
+      _loading = weui.loading('字典加载中')
+      if (_self.form.dlxz === '1') {
+        _self.dict.dldmList = _self.ptDldmList
+        _loading.hide()
+      } else if (_self.form.dlxz === '2') {
+        _self.dict.dldmList = _self.zdDldmList
+        _loading.hide()
+      }
     },
     queryLddmist () {
-      loading = weui.loading('字典数据加载中')
-      fetchLddmList({ 'dlxz': this.form.dlxz, 'dldm': this.form.dldm }).then(response => {
-        this.dict.lddmList = response.data
-        loading.hide()
-      }).catch(() => {
-        loading.hide()
-      })
+      const _self = this
+      _loading = weui.loading('字典加载中')
+      if (_self.form.dlxz === '1') {
+        let lddmList = _self.ptLddmList.filter(item => {
+          if (item.key === _self.form.dldm || item.value === '0000') return true
+          else return false
+        })
+        _self.dict.lddmList = lddmList
+        _loading.hide()
+      } else if (_self.form.dlxz === '2') {
+        let lddmList = _self.zdLddmList.filter(item => {
+          if (item.key === _self.form.dldm || item.value === '0000') return true
+          else return false
+        })
+        _self.dict.lddmList = lddmList
+        _loading.hide()
+      }
     },
     modifyWfrq () {
       const _self = this
@@ -593,21 +617,21 @@ export default {
             })
             return
           }
-          loading = weui.loading('数据加载中')
+          _loading = weui.loading('数据加载中')
           _self.showLoading = true
 
           fetchVehicleInfo({ 'hpzl': _self.form.hpzl, 'hphm': _self.form.hphm }).then(response => {
             if (response.data.code === '200') {
-              for (var i in _self.dict.csysList) {
-                if (_self.dict.csysList[i].value === response.data.data.csys) {
-                  _self.form.csys = _self.dict.csysList[i].value
-                  _self.form.csysText = _self.dict.csysList[i].label
+              for (var i in _self.csysList) {
+                if (_self.csysList[i].value === response.data.data.csys) {
+                  _self.form.csys = _self.csysList[i].value
+                  _self.form.csysText = _self.csysList[i].label
                 }
               }
-              for (var j in _self.dict.cllxList) {
-                if (_self.dict.cllxList[j].value === response.data.data.cllx) {
-                  _self.form.cllx = _self.dict.cllxList[j].value
-                  _self.form.cllxText = _self.dict.cllxList[j].label
+              for (var j in _self.cllxList) {
+                if (_self.cllxList[j].value === response.data.data.cllx) {
+                  _self.form.cllx = _self.cllxList[j].value
+                  _self.form.cllxText = _self.cllxList[j].label
                 }
               }
               _self.form.czmc = response.data.data.czmc
@@ -636,7 +660,7 @@ export default {
       _self.showLoading = false
       _self.showSearchBtn = false
       _self.showUploadBtn = true
-      loading.hide()
+      _loading.hide()
       const now = new Date()
       const y = now.getFullYear()
       const M = (now.getMonth() + 1) < 10 ? '0' + (now.getMonth() + 1) : now.getMonth() + 1
@@ -696,8 +720,8 @@ export default {
     },
     hpzlDictPicker () {
       const _self = this
-      weui.picker(_self.dict.hpzlList, {
-        defaultValue: [_self.dict.hpzlList[0].value],
+      weui.picker(_self.hpzlList, {
+        defaultValue: [_self.hpzlList[0].value],
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.hpzl = result[0].value
@@ -708,8 +732,8 @@ export default {
     },
     dlxzDictPicker () {
       const _self = this
-      weui.picker(_self.dict.dlxzList, {
-        defaultValue: [_self.dict.dlxzList[0].value],
+      weui.picker(_self.dlxzList, {
+        defaultValue: [_self.dlxzList[0].value],
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.dlxz = result[0].value
@@ -765,8 +789,8 @@ export default {
     },
     csysDictPicker () {
       const _self = this
-      weui.picker(_self.dict.csysList, {
-        defaultValue: [_self.dict.csysList[0].value],
+      weui.picker(_self.csysList, {
+        defaultValue: [_self.csysList[0].value],
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.csys = result[0].value
@@ -777,8 +801,8 @@ export default {
     },
     clflDictPicker () {
       const _self = this
-      weui.picker(_self.dict.clflList, {
-        defaultValue: [_self.dict.clflList[0].value],
+      weui.picker(_self.clflList, {
+        defaultValue: [_self.clflList[0].value],
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.clfl = result[0].value
@@ -789,8 +813,8 @@ export default {
     },
     cllxDictPicker () {
       const _self = this
-      weui.picker(_self.dict.cllxList, {
-        defaultValue: [_self.dict.cllxList[0].value],
+      weui.picker(_self.cllxList, {
+        defaultValue: [_self.cllxList[0].value],
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.cllx = result[0].value
@@ -801,8 +825,8 @@ export default {
     },
     cltyDictPicker () {
       const _self = this
-      weui.picker(_self.dict.cltyList, {
-        defaultValue: [_self.dict.cltyList[0].value],
+      weui.picker(_self.cltyList, {
+        defaultValue: [_self.cltyList[0].value],
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.clty = result[0].value
@@ -817,7 +841,6 @@ export default {
       this.queryDldmist()
       this.form.dldm = ''
       this.form.dldmText = ''
-      this.dict.lddmList = []
       this.form.lddm = ''
       this.form.lddmText = ''
     },
@@ -835,14 +858,14 @@ export default {
     uploadedCount: function (value) {
       if (value >= 0 && value <= this.uploadFileList.length) {
         /* loading */
-        loading = weui.loading('正在提交数据')
+        _loading = weui.loading('正在提交数据')
         this.showLoading = true
       } else if (value === this.uploadFileList.length + 1) {
-        loading.hide()
+        _loading.hide()
         this.showLoading = false
         this.$router.push('/success')
       } else if (value === -1) {
-        loading.hide()
+        _loading.hide()
         this.showLoading = false
         this.$router.push('/warn')
       }
