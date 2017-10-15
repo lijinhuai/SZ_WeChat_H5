@@ -17,32 +17,54 @@ Vue.use(Router)
  **/
 export const constantRouterMap = [{
   path: '/',
-  component: _import('Hello')
+  redirect: '/login'
+    // hidden: true
+},
+{
+  path: '/login',
+  component: _import('login/index')
+    // hidden: true
+},
+{
+  path: '/hello',
+  component: _import('Hello'),
+  meta: {
+    role: ['admin']
+  }
     // hidden: true
 },
 {
   path: '/result',
-  component: _import('Result')
+  component: _import('Result'),
+  meta: {
+    role: ['admin']
+  }
     // hidden: true
 },
 {
   path: '/success',
-  component: _import('Success')
+  component: _import('Success'),
+  meta: {
+    role: ['admin']
+  }
 },
 {
   path: '/warn',
-  component: _import('Warn')
+  component: _import('Warn'),
+  meta: {
+    role: ['admin']
+  }
+},
+{
+  path: '/404',
+  component: _import('errorPage/404'),
+  hidden: true
+},
+{
+  path: '/401',
+  component: _import('errorPage/401'),
+  hidden: true
 }
-  /* , {
-    path: '/404',
-    component: _import('errorPage/404'),
-    hidden: true
-  },
-  {
-    path: '/401',
-    component: _import('errorPage/401'),
-    hidden: true
-  } */
 ]
 
 export default new Router({

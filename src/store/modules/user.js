@@ -60,8 +60,8 @@ const user = {
       return new Promise((resolve, reject) => {
         loginByUsername(username, userInfo.password).then(response => {
           const data = response.data
-          setToken(response.data.token)
-          commit('SET_TOKEN', data.token)
+          setToken(response.data.result)
+          commit('SET_TOKEN', data.result)
           resolve()
         }).catch(error => {
           reject(error)
@@ -77,10 +77,10 @@ const user = {
       return new Promise((resolve, reject) => {
         getUserInfo(state.token).then(response => {
           const data = response.data
-          commit('SET_ROLES', data.role)
-          commit('SET_NAME', data.name)
-          commit('SET_AVATAR', data.avatar)
-          commit('SET_INTRODUCTION', data.introduction)
+          commit('SET_ROLES', data.data.role)
+          // commit('SET_NAME', data.name)
+          // commit('SET_AVATAR', data.avatar)
+          // commit('SET_INTRODUCTION', data.introduction)
           resolve(response)
         }).catch(error => {
           reject(error)
