@@ -2,8 +2,10 @@ import * as types from './mutation-types'
 import {
   fetchHpzlList,
   fetchDlxzList,
-  fetchDldmList,
-  fetchLddmList,
+  fetchPtDldmList,
+  fetchPtLddmList,
+  fetchZdDldmList,
+  fetchZdLddmList,
   fetchCsysList,
   fetchCllxList,
   fetchClflList,
@@ -34,9 +36,7 @@ const actions = {
   setPtDldmDict: ({
     commit
   }) => {
-    fetchDldmList({
-      'dlxz': '1'
-    }).then(response => {
+    fetchPtDldmList().then(response => {
       const data = response.data
       commit(types.SET_PTDLDM_DICT, {
         dictList: data
@@ -46,9 +46,7 @@ const actions = {
   setPtLddmDict: ({
     commit
   }) => {
-    fetchLddmList({
-      'dlxz': '1'
-    }).then(response => {
+    fetchPtLddmList().then(response => {
       const data = response.data
       commit(types.SET_PTLDDM_DICT, {
         dictList: data
@@ -58,9 +56,7 @@ const actions = {
   setZdDldmDict: ({
     commit
   }) => {
-    fetchDldmList({
-      'dlxz': '2'
-    }).then(response => {
+    fetchZdDldmList().then(response => {
       const data = response.data
       commit(types.SET_ZDDLDM_DICT, {
         dictList: data
@@ -70,9 +66,7 @@ const actions = {
   setZdLddmDict: ({
     commit
   }) => {
-    fetchLddmList({
-      'dlxz': '2'
-    }).then(response => {
+    fetchZdLddmList().then(response => {
       const data = response.data
       commit(types.SET_ZDLDDM_DICT, {
         dictList: data

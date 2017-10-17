@@ -222,6 +222,10 @@ import { fetchVehicleInfo, uploadPecc } from '@/api/pecc'
 
 import { mapGetters, mapActions } from 'vuex'
 
+import {
+  getToken
+} from '@/utils/auth'
+
 import { BASE_API } from '@/config'
 var _loading
 
@@ -343,7 +347,7 @@ export default {
       const _self = this
       var uploadCount = 0
       weui.uploader('#uploader', {
-        url: BASE_API + 'peccapi/uploadPeccPhoto',
+        url: BASE_API + 'pecc/uploadPeccPhoto',
         auto: false,
         type: 'file',
         fileVal: 'fileVal',
@@ -404,6 +408,7 @@ export default {
         },
         onBeforeSend: function (data, headers) {
           console.log(this, data, headers)
+          headers['Authorization'] = getToken()
           // $.extend(data, { test: 1 }) // 可以扩展此对象来控制上传参数
           // $.extend(headers, { Origin: 'http://127.0.0.1' }) // 可以扩展此对象来控制上传头部
           var index
@@ -863,7 +868,7 @@ export default {
       } else if (value === this.uploadFileList.length + 1) {
         _loading.hide()
         this.showLoading = false
-        this.$router.push('/success')
+        // this.$router.push('/success')
       } else if (value === -1) {
         _loading.hide()
         this.showLoading = false

@@ -2,7 +2,7 @@ import fetch from '@/utils/fetch'
 // 查询号牌种类字典
 export function fetchHpzlList () {
   return fetch({
-    url: '/peccapi/hpzl',
+    url: '/dict/hpzls',
     method: 'get'
   })
 }
@@ -10,32 +10,46 @@ export function fetchHpzlList () {
 // 查询道路性质字典
 export function fetchDlxzList () {
   return fetch({
-    url: '/peccapi/dlxz',
+    url: '/dict/dlxzs',
     method: 'get'
   })
 }
-// 查询道路代码字典
-export function fetchDldmList (params) {
+// 查询普通道路代码字典
+export function fetchPtDldmList () {
   return fetch({
-    url: '/peccapi/dldm',
-    method: 'get',
-    params: params
+    url: '/dict/ptdldms',
+    method: 'get'
   })
 }
 
-// 查询路段代码字典
-export function fetchLddmList (params) {
+// 查询普通路段代码字典
+export function fetchPtLddmList () {
   return fetch({
-    url: '/peccapi/lddm',
-    method: 'get',
-    params: params
+    url: '/dict/ptlddms',
+    method: 'get'
+  })
+}
+
+// 查询普通道路代码字典
+export function fetchZdDldmList () {
+  return fetch({
+    url: '/dict/zddldms',
+    method: 'get'
+  })
+}
+
+// 查询普通路段代码字典
+export function fetchZdLddmList () {
+  return fetch({
+    url: '/dict/zdlddms',
+    method: 'get'
   })
 }
 
 // 查询车身颜色字典
 export function fetchCsysList () {
   return fetch({
-    url: '/peccapi/csys',
+    url: '/dict/csyss',
     method: 'get'
   })
 }
@@ -43,7 +57,7 @@ export function fetchCsysList () {
 // 查询车辆分类字典
 export function fetchClflList () {
   return fetch({
-    url: '/peccapi/clfl',
+    url: '/dict/clfls',
     method: 'get'
   })
 }
@@ -51,7 +65,7 @@ export function fetchClflList () {
 // 查询车辆类型字典
 export function fetchCllxList () {
   return fetch({
-    url: '/peccapi/cllx',
+    url: '/dict/cllxs',
     method: 'get'
   })
 }
@@ -59,7 +73,7 @@ export function fetchCllxList () {
 // 查询车辆拖移字典
 export function fetchCltyList () {
   return fetch({
-    url: '/peccapi/clty',
+    url: '/dict/cltys',
     method: 'get'
   })
 }
@@ -67,7 +81,7 @@ export function fetchCltyList () {
 // 上传违停拍照数据
 export function uploadPecc (data) {
   return fetch({
-    url: '/peccapi/pecc',
+    url: '/pecc/pecc',
     method: 'post',
     data: data
   })
@@ -75,7 +89,7 @@ export function uploadPecc (data) {
 
 export function fetchVehicleInfo (params) {
   return fetch({
-    url: '/peccapi/vehcileInfo',
+    url: '/pecc/vehcileInfo',
     method: 'get',
     params: params
   })
