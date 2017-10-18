@@ -1,8 +1,10 @@
 <template>
-
+  <div>
+  </div>
 </template>
 
 <script>
+import weui from 'weui.js'
 
 export default {
   name: 'login',
@@ -13,6 +15,12 @@ export default {
       this.$store.dispatch('LoginByUsername', { username, password }).then(() => {
         this.$router.push({ path: '/' })
       }).catch(() => {
+      })
+    } else {
+      weui.alert('您没有访问权限!', function () {
+        console.log('ok')
+      }, {
+        title: '警告'
       })
     }
   },

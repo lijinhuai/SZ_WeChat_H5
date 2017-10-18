@@ -868,7 +868,7 @@ export default {
       } else if (value === this.uploadFileList.length + 1) {
         _loading.hide()
         this.showLoading = false
-        // this.$router.push('/success')
+        this.$router.push('/success')
       } else if (value === -1) {
         _loading.hide()
         this.showLoading = false
