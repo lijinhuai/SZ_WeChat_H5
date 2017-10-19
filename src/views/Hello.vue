@@ -1,3 +1,4 @@
+
 <template>
   <div class="page input js_show">
     <CustomKeyboard :isOpen="isOpen" :defaultValue="hphmDefaultValue" :onChange="onChange" :onBlur="onBlur" :onDone="onDone"></CustomKeyboard>
@@ -212,6 +213,7 @@
 </template>
 <script>
 import weui from 'weui.js'
+import cusPicker from '@/components/CustomPicker/picker'
 import watermark from 'watermarkjs'
 import * as imageUtil from '@/utils/image'
 import * as dateUtil from '@/utils/date'
@@ -233,6 +235,7 @@ export default {
   name: 'hello',
   data () {
     return {
+      searchText: '1111',
       maxPicAmounts: 3,
       isOpen: false, // 键盘是否打开
       showSearchBtn: true, // 显示查询按钮
@@ -353,9 +356,9 @@ export default {
         fileVal: 'fileVal',
         // compress: false,
         compress: {
-          width: 1600,
-          height: 1600,
-          quality: 0.8
+          width: 640,
+          height: 480,
+          quality: 1
         },
         onBeforeQueued: function (files) {
           // `this` 是轮询到的文件, `files` 是所有文件
@@ -385,12 +388,12 @@ export default {
         },
         onQueued: function () {
           const that = this
-          const dateStr = dateUtil.formatDate(new Date(), 'yyyy/MM/dd HH:mm')
+          const dateStr = dateUtil.formatDate(new Date(), 'yyyy/MM/dd HH:mm:ss')
           // const markStr = dateStr + ' ' + _self.form.dldmText
           const markStr = dateStr
           that.markStr = markStr
           watermark([this.url])
-            .image(watermark.text.lowerRight(markStr + ' ' + _self.form.dldmText, '48pt serif', '#FFFF00', 0.8))
+            .image(watermark.text.lowerRight(markStr, '20pt serif', '#FFFF00', 0.8))
             .then(function (img) {
               that.url = imageUtil.dataURItoObjectURL(img.src)
               // that.base64 = img.src
@@ -422,7 +425,7 @@ export default {
           data.index = index
           data.uploadDir = _self.uploadDir
           data.ticketNumber = _self.ticketNumber
-          data.markStr = this.markStr + ' ' + _self.form.dldmText
+          data.markStr = this.markStr
           // data.base64 = this.base64
           // return false // 阻止文件上传
         },
@@ -725,8 +728,9 @@ export default {
     },
     hpzlDictPicker () {
       const _self = this
-      weui.picker(_self.hpzlList, {
-        defaultValue: [_self.hpzlList[0].value],
+      cusPicker.picker(_self.hpzlList, {
+        // defaultValue: [_self.hpzlList[0].value],
+        defaultValue: [_self.form.hpzl],
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.hpzl = result[0].value
@@ -756,8 +760,8 @@ export default {
         })
         return
       }
-      weui.picker(_self.dict.dldmList, {
-        defaultValue: [_self.dict.dldmList[0].value],
+      cusPicker.picker(_self.dict.dldmList, {
+        defaultValue: [_self.form.dldm],
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.dldm = result[0].value
@@ -782,8 +786,8 @@ export default {
         })
         return
       }
-      weui.picker(_self.dict.lddmList, {
-        defaultValue: [_self.dict.lddmList[0].value],
+      cusPicker.picker(_self.dict.lddmList, {
+        defaultValue: [_self.form.lddm],
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.lddm = result[0].value
@@ -794,8 +798,8 @@ export default {
     },
     csysDictPicker () {
       const _self = this
-      weui.picker(_self.csysList, {
-        defaultValue: [_self.csysList[0].value],
+      cusPicker.picker(_self.csysList, {
+        defaultValue: [_self.form.csys],
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.csys = result[0].value
@@ -806,8 +810,8 @@ export default {
     },
     clflDictPicker () {
       const _self = this
-      weui.picker(_self.clflList, {
-        defaultValue: [_self.clflList[0].value],
+      cusPicker.picker(_self.clflList, {
+        defaultValue: [_self.form.clfl],
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.clfl = result[0].value
@@ -818,8 +822,8 @@ export default {
     },
     cllxDictPicker () {
       const _self = this
-      weui.picker(_self.cllxList, {
-        defaultValue: [_self.cllxList[0].value],
+      cusPicker.picker(_self.cllxList, {
+        defaultValue: [_self.form.cllx],
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.cllx = result[0].value

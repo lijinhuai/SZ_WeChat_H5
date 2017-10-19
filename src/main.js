@@ -1,3 +1,9 @@
+/*
+ * Created by jinhuailee on Thu Oct 19 2017 12:33:26
+ *
+ * Copyright 2001-2017 Suzhou CyberTech Technology Co., Ltd.
+ */
+
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'

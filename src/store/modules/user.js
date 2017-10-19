@@ -75,7 +75,7 @@ const user = {
       state
     }) {
       return new Promise((resolve, reject) => {
-        getUserInfo(state.token).then(response => {
+        getUserInfo().then(response => {
           const data = response.data
           commit('SET_ROLES', data.data.role)
           // commit('SET_NAME', data.name)
