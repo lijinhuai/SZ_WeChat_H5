@@ -246,7 +246,7 @@ function picker() {
         reloadPicker()
       })
 
-      $searchInput.on('change', function () {
+      $searchInput.on('input', function () {
         if ($searchInput.val() === '') {
           items = _items
         } else {
