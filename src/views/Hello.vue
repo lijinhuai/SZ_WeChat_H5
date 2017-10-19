@@ -224,9 +224,7 @@ import { fetchVehicleInfo, uploadPecc } from '@/api/pecc'
 
 import { mapGetters, mapActions } from 'vuex'
 
-import {
-  getToken
-} from '@/utils/auth'
+import { getToken } from '@/utils/auth'
 
 import { BASE_API } from '@/config'
 var _loading
@@ -294,8 +292,7 @@ export default {
       },
       // 约定上传form正则
       uploadRegexp: {
-        regexp: {
-        }
+        regexp: {}
       }
     }
   },
@@ -365,7 +362,11 @@ export default {
 
           uploadCount = _self.uploadFileList.length
 
-          if (['image/jpg', 'image/jpeg', 'image/png', 'image/gif'].indexOf(this.type) < 0) {
+          if (
+            ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'].indexOf(
+              this.type
+            ) < 0
+          ) {
             weui.alert('请上传图片')
             return false // 阻止文件添加
           }
@@ -373,7 +374,8 @@ export default {
             weui.alert('请上传不超过10M的图片')
             return false
           }
-          if (files.length > 3) { // 防止一下子选择过多文件
+          if (files.length > 3) {
+            // 防止一下子选择过多文件
             weui.alert('最多只能上传3张图片，请重新选择')
             return false
           }
@@ -388,12 +390,17 @@ export default {
         },
         onQueued: function () {
           const that = this
-          const dateStr = dateUtil.formatDate(new Date(), 'yyyy/MM/dd HH:mm:ss')
+          const dateStr = dateUtil.formatDate(
+            new Date(),
+            'yyyy/MM/dd HH:mm:ss'
+          )
           // const markStr = dateStr + ' ' + _self.form.dldmText
           const markStr = dateStr
           that.markStr = markStr
           watermark([this.url])
-            .image(watermark.text.lowerRight(markStr, '20pt serif', '#FFFF00', 0.8))
+            .image(
+              watermark.text.lowerRight(markStr, '20pt serif', '#FFFF00', 0.8)
+            )
             .then(function (img) {
               that.url = imageUtil.dataURItoObjectURL(img.src)
               // that.base64 = img.src
@@ -448,55 +455,61 @@ export default {
     // 缩略图预览
     initGallery () {
       const _self = this
-      document.querySelector('#uploaderFiles').addEventListener('click', function (e) {
-        var target = e.target
+      document
+        .querySelector('#uploaderFiles')
+        .addEventListener('click', function (e) {
+          var target = e.target
 
-        while (!target.classList.contains('weui-uploader__file') && target) {
-          target = target.parentNode
-        }
-        if (!target) return
-
-        var url = target.getAttribute('style') || ''
-        var id = target.getAttribute('data-id')
-
-        if (url) {
-          url = url.match(/url\((.*?)\)/)[1].replace(/"/g, '')
-        }
-
-        // 将url改成修改添加水印后的base64图片
-        var index
-        for (var i = 0, len = _self.uploadFileList.length; i < len; ++i) {
-          var file = _self.uploadFileList[i]
-          if (file.id === parseInt(id)) {
-            index = i
-            break
+          while (!target.classList.contains('weui-uploader__file') && target) {
+            target = target.parentNode
           }
-        }
-        if (index >= 0) url = _self.uploadFileList[index].url
-        // target.style = 'background-image: url(' + url + ');'
+          if (!target) return
 
-        var gallery = weui.gallery(url, {
-          onDelete: function onDelete () {
-            weui.confirm('确定删除该图片？', function () {
-              var index
-              for (var i = 0, len = _self.uploadFileList.length; i < len; ++i) {
-                var file = _self.uploadFileList[i]
-                if (file.id === parseInt(id)) {
-                  index = i
-                  break
+          var url = target.getAttribute('style') || ''
+          var id = target.getAttribute('data-id')
+
+          if (url) {
+            url = url.match(/url\((.*?)\)/)[1].replace(/"/g, '')
+          }
+
+          // 将url改成修改添加水印后的base64图片
+          var index
+          for (var i = 0, len = _self.uploadFileList.length; i < len; ++i) {
+            var file = _self.uploadFileList[i]
+            if (file.id === parseInt(id)) {
+              index = i
+              break
+            }
+          }
+          if (index >= 0) url = _self.uploadFileList[index].url
+          // target.style = 'background-image: url(' + url + ');'
+
+          var gallery = weui.gallery(url, {
+            onDelete: function onDelete () {
+              weui.confirm('确定删除该图片？', function () {
+                var index
+                for (
+                  var i = 0, len = _self.uploadFileList.length;
+                  i < len;
+                  ++i
+                ) {
+                  var file = _self.uploadFileList[i]
+                  if (file.id === parseInt(id)) {
+                    index = i
+                    break
+                  }
                 }
-              }
-              if (index >= 0) _self.uploadFileList.splice(index, 1)
+                if (index >= 0) _self.uploadFileList.splice(index, 1)
 
-              target.remove()
-              // gallery.hide()
-              gallery.hide(function () {
-                weui.toast('操作成功', 500)
+                target.remove()
+                // gallery.hide()
+                gallery.hide(function () {
+                  weui.toast('操作成功', 500)
+                })
               })
-            })
-          }
+            }
+          })
         })
-      })
     },
     showKeyboard () {
       this.isOpen = true
@@ -526,15 +539,13 @@ export default {
       _loading = weui.loading('字典加载中')
       if (_self.form.dlxz === '1') {
         let lddmList = _self.ptLddmList.filter(item => {
-          if (item.key === _self.form.dldm || item.value === '0000') return true
-          else return false
+          if (item.key === _self.form.dldm || item.value === '0000') { return true } else return false
         })
         _self.dict.lddmList = lddmList
         _loading.hide()
       } else if (_self.form.dlxz === '2') {
         let lddmList = _self.zdLddmList.filter(item => {
-          if (item.key === _self.form.dldm || item.value === '0000') return true
-          else return false
+          if (item.key === _self.form.dldm || item.value === '0000') { return true } else return false
         })
         _self.dict.lddmList = lddmList
         _loading.hide()
@@ -612,56 +623,62 @@ export default {
       weui.form.checkIfBlur('#searchForm', _self.searchRegexp)
 
       // 表单提交
-      weui.form.validate('#searchForm', function (error) {
-        console.log(error)
-        if (!error) {
-          if (_self.uploadFileList.length !== 3) {
-            weui.topTips('请上传3张照片', {
-              duration: 3000,
-              className: 'custom-classname',
-              callback: function callback () {
-                // console.log('close')
-              }
-            })
-            return
-          }
-          _loading = weui.loading('数据加载中')
-          _self.showLoading = true
-
-          fetchVehicleInfo({ 'hpzl': _self.form.hpzl, 'hphm': _self.form.hphm }).then(response => {
-            if (response.data.code === '200') {
-              for (var i in _self.csysList) {
-                if (_self.csysList[i].value === response.data.data.csys) {
-                  _self.form.csys = _self.csysList[i].value
-                  _self.form.csysText = _self.csysList[i].label
+      weui.form.validate(
+        '#searchForm',
+        function (error) {
+          console.log(error)
+          if (!error) {
+            if (_self.uploadFileList.length !== 3) {
+              weui.topTips('请上传3张照片', {
+                duration: 3000,
+                className: 'custom-classname',
+                callback: function callback () {
+                  // console.log('close')
                 }
-              }
-              for (var j in _self.cllxList) {
-                if (_self.cllxList[j].value === response.data.data.cllx) {
-                  _self.form.cllx = _self.cllxList[j].value
-                  _self.form.cllxText = _self.cllxList[j].label
-                }
-              }
-              _self.form.czmc = response.data.data.czmc
-              _self.form.czdz = response.data.data.czdz
-              _self.form.lxdh = response.data.data.lxdh
-              _self.form.clpp = response.data.data.clpp
-            } else {
-              _self.showWarnToast = true
-              setTimeout(() => {
-                _self.showWarnToast = false
-              }, 2000)
+              })
+              return
             }
-            _self.searchEnd()
-          }).catch(() => {
-            _self.showWarnToast = true
-            setTimeout(() => {
-              _self.showWarnToast = false
-            }, 2000)
-            _self.searchEnd()
-          })
-        }
-      }, _self.searchRegexp)
+            _loading = weui.loading('数据加载中')
+            _self.showLoading = true
+
+            fetchVehicleInfo({ hpzl: _self.form.hpzl, hphm: _self.form.hphm })
+              .then(response => {
+                if (response.data.code === '200') {
+                  for (var i in _self.csysList) {
+                    if (_self.csysList[i].value === response.data.data.csys) {
+                      _self.form.csys = _self.csysList[i].value
+                      _self.form.csysText = _self.csysList[i].label
+                    }
+                  }
+                  for (var j in _self.cllxList) {
+                    if (_self.cllxList[j].value === response.data.data.cllx) {
+                      _self.form.cllx = _self.cllxList[j].value
+                      _self.form.cllxText = _self.cllxList[j].label
+                    }
+                  }
+                  _self.form.czmc = response.data.data.czmc
+                  _self.form.czdz = response.data.data.czdz
+                  _self.form.lxdh = response.data.data.lxdh
+                  _self.form.clpp = response.data.data.clpp
+                } else {
+                  _self.showWarnToast = true
+                  setTimeout(() => {
+                    _self.showWarnToast = false
+                  }, 2000)
+                }
+                _self.searchEnd()
+              })
+              .catch(() => {
+                _self.showWarnToast = true
+                setTimeout(() => {
+                  _self.showWarnToast = false
+                }, 2000)
+                _self.searchEnd()
+              })
+          }
+        },
+        _self.searchRegexp
+      )
     },
     searchEnd () {
       const _self = this
@@ -671,10 +688,14 @@ export default {
       _loading.hide()
       const now = new Date()
       const y = now.getFullYear()
-      const M = (now.getMonth() + 1) < 10 ? '0' + (now.getMonth() + 1) : now.getMonth() + 1
+      const M =
+        now.getMonth() + 1 < 10
+          ? '0' + (now.getMonth() + 1)
+          : now.getMonth() + 1
       const d = now.getDate() < 10 ? '0' + now.getDate() : now.getDate()
       const H = now.getHours() < 10 ? '0' + now.getHours() : now.getHours()
-      const m = now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes()
+      const m =
+        now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes()
       _self.wfsj.y = y
       _self.wfsj.M = M
       _self.wfsj.d = d
@@ -692,32 +713,36 @@ export default {
       weui.form.checkIfBlur('#uploadForm', _self.uploadRegexp)
 
       // 表单提交
-      weui.form.validate('#uploadForm', function (error) {
-        console.log(error)
-        if (!error) {
-          _self.uploadedCount = 0
-          uploadPecc(_self.form).then(
-            (response) => {
-              if (response.data.code === '200') {
-                _self.uploadedCount++
-                _self.uploadDir = response.data.data.uploadDir
-                _self.ticketNumber = response.data.data.ticketNumber
-                _self.uploadFileList.forEach(function (file) {
-                  file.upload()
-                })
-              } else {
+      weui.form.validate(
+        '#uploadForm',
+        function (error) {
+          console.log(error)
+          if (!error) {
+            _self.uploadedCount = 0
+            uploadPecc(_self.form)
+              .then(response => {
+                if (response.data.code === '200') {
+                  _self.uploadedCount++
+                  _self.uploadDir = response.data.data.uploadDir
+                  _self.ticketNumber = response.data.data.ticketNumber
+                  _self.uploadFileList.forEach(function (file) {
+                    file.upload()
+                  })
+                } else {
+                  _self.uploadedCount = -1
+                }
+              })
+              .catch(() => {
+                // weui.toast('提交成功(假的)', {
+                //   duration: 3000,
+                //   className: 'bears'
+                // })
                 _self.uploadedCount = -1
-              }
-            }
-          ).catch(() => {
-            // weui.toast('提交成功(假的)', {
-            //   duration: 3000,
-            //   className: 'bears'
-            // })
-            _self.uploadedCount = -1
-          })
-        }
-      }, _self.uploadRegexp)
+              })
+          }
+        },
+        _self.uploadRegexp
+      )
 
       // const _self = this
       // document.getElementById('uploaderBtn').addEventListener('click', function () {
@@ -729,8 +754,7 @@ export default {
     hpzlDictPicker () {
       const _self = this
       cusPicker.picker(_self.hpzlList, {
-        // defaultValue: [_self.hpzlList[0].value],
-        defaultValue: [_self.form.hpzl],
+        defaultValue: [_self.hpzlList[0].value],
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.hpzl = result[0].value
@@ -754,14 +778,13 @@ export default {
     dldmDictPicker () {
       const _self = this
       if (_self.form.dlxz === '') {
-        weui.alert('请先选择道路性质', function () {
-        }, {
+        weui.alert('请先选择道路性质', function () {}, {
           title: '警告'
         })
         return
       }
       cusPicker.picker(_self.dict.dldmList, {
-        defaultValue: [_self.form.dldm],
+        defaultValue: [_self.dict.dldmList[0].value],
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.dldm = result[0].value
@@ -773,21 +796,19 @@ export default {
     lddmDictPicker () {
       const _self = this
       if (_self.form.dlxz === '') {
-        weui.alert('请先选择道路性质', function () {
-        }, {
+        weui.alert('请先选择道路性质', function () {}, {
           title: '警告'
         })
         return
       }
       if (_self.form.dldm === '') {
-        weui.alert('请先选择违法地点', function () {
-        }, {
+        weui.alert('请先选择违法地点', function () {}, {
           title: '警告'
         })
         return
       }
       cusPicker.picker(_self.dict.lddmList, {
-        defaultValue: [_self.form.lddm],
+        defaultValue: [_self.dict.lddmList[0].value],
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.lddm = result[0].value
@@ -799,7 +820,7 @@ export default {
     csysDictPicker () {
       const _self = this
       cusPicker.picker(_self.csysList, {
-        defaultValue: [_self.form.csys],
+        defaultValue: [_self.csysList[0].value],
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.csys = result[0].value
@@ -811,7 +832,7 @@ export default {
     clflDictPicker () {
       const _self = this
       cusPicker.picker(_self.clflList, {
-        defaultValue: [_self.form.clfl],
+        defaultValue: [_self.clflList[0].value],
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.clfl = result[0].value
@@ -823,7 +844,7 @@ export default {
     cllxDictPicker () {
       const _self = this
       cusPicker.picker(_self.cllxList, {
-        defaultValue: [_self.form.cllx],
+        defaultValue: [_self.cllxList[0].value],
         className: 'custom-classname',
         onConfirm: function onConfirm (result) {
           _self.form.cllx = result[0].value
@@ -880,7 +901,6 @@ export default {
       }
     }
   }
-
 }
 </script>
 
