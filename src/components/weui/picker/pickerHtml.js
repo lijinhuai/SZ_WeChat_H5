@@ -3,7 +3,6 @@
  *
  * Copyright 2001-2017 Suzhou CyberTech Technology Co., Ltd.
  */
-/* eslint-disable */
 const html = `
 <div abc class="<%= className %>">
   <div class="weui-mask"></div>

@@ -4,14 +4,11 @@
  * Copyright 2001-2017 Suzhou CyberTech Technology Co., Ltd.
  */
 
-
 import $ from '../util'
 import './scroll'
 import * as util from './util'
 import pickerTpl from './pickerHtml'
 import groupTpl from './groupHtml'
-
-/* eslint-disable */
 
 function Result(item) {
   if (typeof item !== 'object') {
@@ -31,7 +28,6 @@ Result.prototype.valueOf = function () {
 
 let _sington
 let temp = {} // temp 存在上一次滑动的位置
-let tempValue = {} // tempValue 存在上一次滑动的位置的value
 
 /**
  * picker 多列选择器。
@@ -189,7 +185,6 @@ function picker() {
     onConfirm: $.noop
   }, options)
 
-
   // 数据处理
   let items
   let isMulti = false // 是否多列的类型
@@ -218,37 +213,37 @@ function picker() {
    * @param {*} selector
    */
   function searchBar(selector) {
-    const $eles = $picker.find(selector);
+    const $eles = $picker.find(selector)
 
     $eles.forEach((ele) => {
-      const $searchBar = $(ele);
-      const $searchLabel = $searchBar.find('.weui-search-bar__label');
-      const $searchInput = $searchBar.find('.weui-search-bar__input');
-      const $searchClear = $searchBar.find('.weui-icon-clear');
-      const $searchCancel = $searchBar.find('.weui-search-bar__cancel-btn');
+      const $searchBar = $(ele)
+      const $searchLabel = $searchBar.find('.weui-search-bar__label')
+      const $searchInput = $searchBar.find('.weui-search-bar__input')
+      const $searchClear = $searchBar.find('.weui-icon-clear')
+      const $searchCancel = $searchBar.find('.weui-search-bar__cancel-btn')
 
       function cancelSearch() {
-        $searchInput.val('');
-        $searchBar.removeClass('weui-search-bar_focusing');
+        $searchInput.val('')
+        $searchBar.removeClass('weui-search-bar_focusing')
       }
 
       $searchLabel.on('click', function () {
-        $searchBar.addClass('weui-search-bar_focusing');
-        $searchInput[0].focus();
-      });
+        $searchBar.addClass('weui-search-bar_focusing')
+        $searchInput[0].focus()
+      })
       $searchInput.on('blur', function () {
-        if (!this.value.length) cancelSearch();
-      });
+        if (!this.value.length) cancelSearch()
+      })
       $searchClear.on('click', function () {
-        $searchInput.val('');
-        $searchInput[0].focus();
-      });
+        $searchInput.val('')
+        $searchInput[0].focus()
+      })
       $searchCancel.on('click', function () {
-        cancelSearch();
-        $searchInput[0].blur();
+        cancelSearch()
+        $searchInput[0].blur()
         items = _items
-        reloadPicker();
-      });
+        reloadPicker()
+      })
 
       $searchInput.on('change', function () {
         if ($searchInput.val() === '') {
@@ -260,11 +255,11 @@ function picker() {
           })
           items = itemFilter
         }
-        reloadPicker();
-      });
-    });
+        reloadPicker()
+      })
+    })
 
-    return $eles;
+    return $eles
   }
 
   function reloadPicker() {
@@ -309,108 +304,105 @@ function picker() {
 
   // 初始化滚动的方法
   function scroll(items, level) {
-    // if (lineTemp[level] === undefined && defaults.defaultValue && defaults.defaultValue[level] !== undefined) {
-    if (defaults.defaultValue) {
-      // 没有缓存选项，而且存在defaultValue
-      const defaultVal = defaults.defaultValue[level] || items[0].value
-      let index = 0,
-        len = items.length
+    if (lineTemp[level] === undefined && defaults.defaultValue && defaults.defaultValue[level] !== undefined) {
+      if (defaults.defaultValue) {
+        // 没有缓存选项，而且存在defaultValue
+        const defaultVal = defaults.defaultValue[level] || items[0].value
+        let index = 0,
+          len = items.length
 
-      if (typeof items[index] === 'object') {
-        for (; index < len; ++index) {
-          if (defaultVal == items[index].value) break
-        }
-      } else {
-        for (; index < len; ++index) {
-          if (defaultVal == items[index]) break
-        }
-      }
-      if (index < len) {
-        lineTemp[level] = index
-      } else {
-        console.warn('Picker has not match defaultValue: ' + defaultVal)
-      }
-    }
-    // debugger
-    $picker.find('.weui-picker__group').eq(level).scroll({
-      items: items,
-      temp: lineTemp[level],
-      onChange: function (item, index) {
-        // 为当前的result赋值。
-        if (item) {
-          result[level] = new Result(item)
-        } else {
-          result[level] = null
-        }
-        lineTemp[level] = index
-
-        if (isMulti) {
-          if (result.length == depth) {
-            defaults.onChange(result)
+        if (typeof items[index] === 'object') {
+          for (; index < len; ++index) {
+            if (defaultVal == items[index].value) break
           }
         } else {
-          /**
-           * @子列表处理
-           * 1. 在没有子列表，或者值列表的数组长度为0时，隐藏掉子列表。
-           * 2. 滑动之后发现重新有子列表时，再次显示子列表。
-           *
-           * @回调处理
-           * 1. 因为滑动实际上是一层一层传递的：父列表滚动完成之后，会call子列表的onChange，从而带动子列表的滑动。
-           * 2. 所以，使用者的传进来onChange回调应该在最后一个子列表滑动时再call
-           */
-          if (item.children && item.children.length > 0) {
-            // $picker.find('.weui-picker__group').eq(level + 1).show() !isMulti && scroll(item.children, level + 1) // 不是多列的情况下才继续处理children
+          for (; index < len; ++index) {
+            if (defaultVal == items[index]) break
+          }
+        }
+        if (index < len) {
+          lineTemp[level] = index
+        } else {
+          console.warn('Picker has not match defaultValue: ' + defaultVal)
+        }
+      }
+      // debugger
+      $picker.find('.weui-picker__group').eq(level).scroll({
+        items: items,
+        temp: lineTemp[level],
+        onChange: function (item, index) {
+          // 为当前的result赋值。
+          if (item) {
+            result[level] = new Result(item)
           } else {
-            // 如果子列表test不通过，子孙列表都隐藏。
-            const $items = $picker.find('.weui-picker__group')
-            $items.forEach((ele, index) => {
-              if (index > level) {
-                $(ele).hide()
-              }
-            })
-
-            result.splice(level + 1)
-
-            defaults.onChange(result)
+            result[level] = null
           }
-        }
-      },
-      onConfirm: defaults.onConfirm
-    })
+          lineTemp[level] = index
+
+          if (isMulti) {
+            if (result.length == depth) {
+              defaults.onChange(result)
+            }
+          } else {
+            /**
+             * @子列表处理
+             * 1. 在没有子列表，或者值列表的数组长度为0时，隐藏掉子列表。
+             * 2. 滑动之后发现重新有子列表时，再次显示子列表。
+             *
+             * @回调处理
+             * 1. 因为滑动实际上是一层一层传递的：父列表滚动完成之后，会call子列表的onChange，从而带动子列表的滑动。
+             * 2. 所以，使用者的传进来onChange回调应该在最后一个子列表滑动时再call
+             */
+            if (item.children && item.children.length > 0) {
+              // $picker.find('.weui-picker__group').eq(level + 1).show() !isMulti && scroll(item.children, level + 1) // 不是多列的情况下才继续处理children
+            } else {
+              // 如果子列表test不通过，子孙列表都隐藏。
+              const $items = $picker.find('.weui-picker__group')
+              $items.forEach((ele, index) => {
+                if (index > level) {
+                  $(ele).hide()
+                }
+              })
+
+              result.splice(level + 1)
+
+              defaults.onChange(result)
+            }
+          }
+        },
+        onConfirm: defaults.onConfirm
+      })
+    }
+
+    let _depth = depth
+    while (_depth--) {
+      groups += groupTpl
+    }
+    $picker.find('.weui-picker__bd').html(groups)
+    show()
+
+    if (isMulti) {
+      items.forEach((item, index) => {
+        scroll(item, index)
+      })
+    } else {
+      scroll(items, 0)
+    }
+
+    $picker
+      .on('click', '.weui-mask', function () {
+        hide()
+      })
+      .on('click', '.weui-picker__action', function () {
+        hide()
+      })
+      .on('click', '#weui-picker-confirm', function () {
+        defaults.onConfirm(result)
+      })
+
+    _sington = $picker[0]
+    _sington.hide = hide
+    return _sington
   }
-
-  let _depth = depth
-  while (_depth--) {
-    groups += groupTpl
-  }
-  $picker.find('.weui-picker__bd').html(groups)
-  show()
-
-  if (isMulti) {
-    items.forEach((item, index) => {
-      scroll(item, index)
-    })
-  } else {
-    scroll(items, 0)
-  }
-
-  $picker
-    .on('click', '.weui-mask', function () {
-      hide()
-    })
-    .on('click', '.weui-picker__action', function () {
-      hide()
-    })
-    .on('click', '#weui-picker-confirm', function () {
-      defaults.onConfirm(result)
-    })
-
-  _sington = $picker[0]
-  _sington.hide = hide
-  return _sington
 }
-
-
-export default {
-  picker
-}
+export default picker

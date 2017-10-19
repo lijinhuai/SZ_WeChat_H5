@@ -213,7 +213,7 @@
 </template>
 <script>
 import weui from 'weui.js'
-import cusPicker from '@/components/CustomPicker/picker'
+import cusPicker from '@/components/weui/picker/picker'
 import watermark from 'watermarkjs'
 import * as imageUtil from '@/utils/image'
 import * as dateUtil from '@/utils/date'

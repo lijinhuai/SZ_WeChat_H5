@@ -4,9 +4,7 @@
  * Copyright 2001-2017 Suzhou CyberTech Technology Co., Ltd.
  */
 
-
 import $ from '../util'
-/* eslint-disable */
 /**
  * set transition
  * @param $target

@@ -3,7 +3,6 @@
  *
  * Copyright 2001-2017 Suzhou CyberTech Technology Co., Ltd.
  */
-/* eslint-disable */
 export const depthOf = (object) => {
   let depth = 1
   if (object.children && object.children[0]) {
