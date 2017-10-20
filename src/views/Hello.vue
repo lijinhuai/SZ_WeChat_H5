@@ -222,7 +222,7 @@ import CustomKeyboard from '@/components/CustomKeyboard.vue'
 
 import { fetchVehicleInfo, uploadPecc } from '@/api/pecc'
 
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 
 import { getToken } from '@/utils/auth'
 
@@ -317,31 +317,7 @@ export default {
     this.initUploader()
     this.initGallery()
   },
-  created () {
-    this.setHpzlDict()
-    this.setDlxzDict()
-    this.setPtDldmDict()
-    this.setPtLddmDict()
-    this.setZdDldmDict()
-    this.setZdLddmDict()
-    this.setCsysDict()
-    this.setCllxDict()
-    this.setClflDict()
-    this.setCltyDict()
-  },
   methods: {
-    ...mapActions({
-      setHpzlDict: 'setHpzlDict', // 将 `this.setHpzlDict()` 映射为 `this.$store.dispatch('setHpzlDict')`
-      setDlxzDict: 'setDlxzDict',
-      setPtDldmDict: 'setPtDldmDict',
-      setPtLddmDict: 'setPtLddmDict',
-      setZdDldmDict: 'setZdDldmDict',
-      setZdLddmDict: 'setZdLddmDict',
-      setCsysDict: 'setCsysDict',
-      setCllxDict: 'setCllxDict',
-      setClflDict: 'setClflDict',
-      setCltyDict: 'setCltyDict'
-    }),
     // 图片手动上传
     initUploader () {
       const _self = this
@@ -539,13 +515,17 @@ export default {
       _loading = weui.loading('字典加载中')
       if (_self.form.dlxz === '1') {
         let lddmList = _self.ptLddmList.filter(item => {
-          if (item.key === _self.form.dldm || item.value === '0000') { return true } else return false
+          if (item.key === _self.form.dldm || item.value === '0000') {
+            return true
+          } else return false
         })
         _self.dict.lddmList = lddmList
         _loading.hide()
       } else if (_self.form.dlxz === '2') {
         let lddmList = _self.zdLddmList.filter(item => {
-          if (item.key === _self.form.dldm || item.value === '0000') { return true } else return false
+          if (item.key === _self.form.dldm || item.value === '0000') {
+            return true
+          } else return false
         })
         _self.dict.lddmList = lddmList
         _loading.hide()

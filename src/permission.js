@@ -2,6 +2,7 @@ import router from './router'
 import store from './store'
 import NProgress from 'nprogress' // Progress 进度条
 import 'nprogress/nprogress.css' // Progress 进度条样式
+import * as dictUtil from './utils/dict'
 import {
   getToken
 } from '@/utils/auth' // 验权
@@ -23,6 +24,7 @@ router.beforeEach((to, from, next) => {
         path: '/hello'
       })
     } else {
+      dictUtil.initDict()
       if (store.getters.roles.length === 0) { // 判断当前用户是否已拉取完user_info信息
         store.dispatch('GetUserInfo').then(res => { // 拉取user_info
           const roles = res.data.data.role

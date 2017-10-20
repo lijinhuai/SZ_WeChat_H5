@@ -1,5 +1,18 @@
 import * as types from '../mutation-types'
 
+import {
+  fetchHpzlList,
+  fetchDlxzList,
+  fetchPtDldmList,
+  fetchPtLddmList,
+  fetchZdDldmList,
+  fetchZdLddmList,
+  fetchCsysList,
+  fetchCllxList,
+  fetchClflList,
+  fetchCltyList
+} from '@/api/pecc'
+
 const dict = {
   // initial state
   state: {
@@ -77,73 +90,121 @@ const dict = {
   actions: {
     setHpzlDict ({
       commit
-    }, dictList) {
+    }) {
       return new Promise((resolve) => {
-        commit(types.SET_HPZL_DICT, {
-          dictList
+        fetchHpzlList().then(response => {
+          const data = response.data
+          commit(types.SET_HPZL_DICT, {
+            dictList: data
+          })
+        })
+      })
+    },
+    setDlxzDict ({
+      commit
+    }) {
+      return new Promise((resolve) => {
+        fetchDlxzList().then(response => {
+          const data = response.data
+          commit(types.SET_DLXZ_DICT, {
+            dictList: data
+          })
         })
       })
     },
     setPtDldmDict ({
       commit
-    }, dictList) {
+    }) {
       return new Promise((resolve) => {
-        commit(types.SET_PTDLDM_DICT, {
-          dictList
+        fetchPtDldmList().then(response => {
+          const data = response.data
+          commit(types.SET_PTDLDM_DICT, {
+            dictList: data
+          })
         })
       })
     },
     setPtLddmDict ({
       commit
-    }, dictList) {
+    }) {
       return new Promise((resolve) => {
-        commit(types.SET_PTLDDM_DICT, {
-          dictList
+        fetchPtLddmList().then(response => {
+          const data = response.data
+          commit(types.SET_PTLDDM_DICT, {
+            dictList: data
+          })
         })
       })
     },
     setZdDldmDict ({
       commit
-    }, dictList) {
+    }) {
       return new Promise((resolve) => {
-        commit(types.SET_ZDDLDM_DICT, {
-          dictList
+        fetchZdDldmList().then(response => {
+          const data = response.data
+          commit(types.SET_ZDDLDM_DICT, {
+            dictList: data
+          })
         })
       })
     },
     setZdLddmDict ({
       commit
-    }, dictList) {
+    }) {
       return new Promise((resolve) => {
-        commit(types.SET_ZDLDDM_DICT, {
-          dictList
+        fetchZdLddmList().then(response => {
+          const data = response.data
+          commit(types.SET_ZDLDDM_DICT, {
+            dictList: data
+          })
+        })
+      })
+    },
+    setCsysDict ({
+      commit
+    }) {
+      return new Promise((resolve) => {
+        fetchCsysList().then(response => {
+          const data = response.data
+          commit(types.SET_CSYS_DICT, {
+            dictList: data
+          })
         })
       })
     },
     setCllxDict ({
       commit
-    }, dictList) {
+    }) {
       return new Promise((resolve) => {
-        commit(types.SET_CLLX_DICT, {
-          dictList
+        fetchCllxList().then(response => {
+          const data = response.data
+          commit(types.SET_CLLX_DICT, {
+            dictList: data
+          })
         })
       })
     },
     setClflDict ({
       commit
-    }, dictList) {
+    }) {
       return new Promise((resolve) => {
-        commit(types.SET_CLFL_DICT, {
-          dictList
+        fetchClflList().then(response => {
+          const data = response.data
+          commit(types.SET_CLFL_DICT, {
+            dictList: data
+          })
         })
       })
     },
     setCltyDict ({
       commit
-    }, dictList) {
+    }) {
       return new Promise((resolve) => {
-        commit(types.SET_CLTY_DICT, {
-          dictList
+        fetchCltyList().then(response => {
+          const data = response.data
+          commit(types.SET_CLTY_DICT, {
+            dictList: data
+          })
         })
       })
     }

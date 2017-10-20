@@ -60,9 +60,13 @@ const user = {
       return new Promise((resolve, reject) => {
         loginByUsername(username, userInfo.password).then(response => {
           const data = response.data
-          setToken(response.data.result)
-          commit('SET_TOKEN', data.result)
-          resolve()
+          if (data.status !== 0) {
+            reject()
+          } else {
+            setToken(data.result)
+            commit('SET_TOKEN', data.result)
+            resolve()
+          }
         }).catch(error => {
           reject(error)
         })
